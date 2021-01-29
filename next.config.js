@@ -8,8 +8,6 @@ const withPreact = require('next-plugin-preact')
 const withPlugins = require('next-compose-plugins')
 const withStyles = require('@webdeb/next-styles')
 
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-
 module.exports = withPlugins(
     [
         [withPreact],
@@ -80,16 +78,6 @@ module.exports = withPlugins(
                 '@authors': join(__dirname, 'blog/authors'),
                 '~': join(__dirname)
             }
-
-            if (!options.dev)
-                config.optimization = {
-                    ...config.optimization,
-                    usedExports: true,
-                    minimizer: [
-                        ...config.optimization.minimizer,
-                        new OptimizeCSSAssetsPlugin()
-                    ]
-                }
 
             return config
         }

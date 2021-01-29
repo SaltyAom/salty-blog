@@ -162,7 +162,7 @@ pre[class*='language-'] {
 
     :not(pre) > code[class*='language-'],
     pre[class*='language-'] {
-        background: #272822;
+        background: theme('colors.gray.800');
     }
 
     /* Inline code */

@@ -8,7 +8,7 @@ const Header: OpenGraphComponent = ({
     summary,
     author,
     image,
-    time: { created, modified }
+    time: { createdWithTime, modifiedWithTime }
 }) => {
     let structuredData = `
 		{
@@ -16,8 +16,8 @@ const Header: OpenGraphComponent = ({
 			"@type":"Article",
 			"headline": "${title}",
 			"description": "${summary}",
-			"datePublished": "${created}",
-			"dateModified": "${modified}",
+			"datePublished": "${createdWithTime}",
+			"dateModified": "${modifiedWithTime}",
 			"image": ["${`/content/${slug}/${image}`}"],
 			"inLanguage": "Thai",
 			"mainEntityOfPage": "https://blog.saltyaom.com/${`/content/${slug}/${image}`}",
@@ -50,8 +50,8 @@ const Header: OpenGraphComponent = ({
             <meta name="title" content={title} />
             <meta name="description" content={summary} />
 
-            <meta property="article:published_time" content={created} />
-            <meta property="article:modified_time" content={modified} />
+            <meta property="article:published_time" content={createdWithTime} />
+            <meta property="article:modified_time" content={modifiedWithTime} />
 
             <meta property="og:title" content={title} />
             <meta property="og:description" content={summary} />

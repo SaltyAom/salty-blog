@@ -1,4 +1,5 @@
-#blog
+#blog,
+#blog > div
     @apply flex flex-col w-full p-4 my-4 sm:my-8 mx-auto
     max-width: 680px
 
@@ -26,12 +27,13 @@
             &:hover
                 background-color: rgba(0,123,255,.1)
 
-        & > figure
-            @apply bg-gray-300 dark:bg-gray-700 rounded-sm overflow-hidden mx-0 my-2
-            box-shadow: 0 8px 25px rgba(0 0 0 / 43%)
+    & > figure,
+    & > p > figure
+        @apply bg-gray-300 dark:bg-gray-700 rounded-sm overflow-hidden mx-0 my-2
+        box-shadow: 0 8px 25px rgba(0 0 0 / 43%)
 
-            & > div:first-child
-                display: block !important
+        & > div:first-child
+            display: block !important
 
     &  > code
         @apply my-4

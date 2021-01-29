@@ -10,18 +10,18 @@ import contents, { Metadata, getContent } from '@contents'
 import hydrate from 'next-mdx-remote/hydrate'
 import { MdxRemote } from 'next-mdx-remote/types'
 
-interface BlogContent extends Metadata {
+export interface BlogContent extends Metadata {
     Content: MdxRemote.Source
 }
 
-interface Blog {
+export interface Blog {
     content: BlogContent
 }
 
 const BlogPage: FunctionComponent<Blog> = ({ content }) => {
-    const { Content, ...metadata } = content
+    let { Content, ...metadata } = content
 
-    const ContentComponent = hydrate(Content, { components })
+    let ContentComponent = hydrate(Content, { components })
 
     return <BlogLayout {...metadata}>{ContentComponent}</BlogLayout>
 }

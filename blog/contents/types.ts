@@ -11,7 +11,9 @@ export interface MetaImage {
 
 export interface MetaTime {
     created: string
+    createdWithTime: string
     modified?: string
+    modifiedWithTime?: string
 }
 
 export interface Metadata {

@@ -4,6 +4,9 @@ import { time } from '../helpers'
 
 import { Metadata } from '../types'
 
+const created = time('2021-1-29 16:55')
+const modified = time('2021-1-29 16:55')
+
 const blog: Metadata = {
     title: 'Hello World',
     slug: 'hello-world',
@@ -17,8 +20,10 @@ const blog: Metadata = {
         }
     },
     time: {
-        created: time('2021-1-29 16:55'),
-        modified: time('2021-1-29 16:55')
+        created: created.format('D MMM YYYY'),
+        createdWithTime: created.toString(),
+        modified: modified.format('D MMM YYYY'),
+        modifiedWithTime: modified.toString()
     }
 }
 

@@ -1,14 +1,12 @@
+import { transformSlugToKey } from '@blog/services'
+
 import saltyAom from './saltyaom'
 
-import { Authors } from './types'
+import { Author } from './types'
 
-export const authors: Authors = [
-    saltyAom
-]
+export const authors = transformSlugToKey<Author>('name', [saltyAom])
 
-export {
-    saltyAom
-} 
+export { saltyAom }
 
 export type { Author, Authors } from './types'
 export default authors

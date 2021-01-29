@@ -1,9 +1,8 @@
-import NextImage from 'next/image'
-import { Link, Image } from '@components/atoms'
+import { Image } from '@components/atoms'
+
+import WrittenBy from '@components/molecules/written-by'
 
 import { BlogHeaderComponent } from './types'
-
-import './header.sass'
 
 const BlogHeader: BlogHeaderComponent = ({
     title,
@@ -15,24 +14,11 @@ const BlogHeader: BlogHeaderComponent = ({
     },
     time: { created }
 }) => (
-    <header id="header">
-        <h1 className="title">{title}</h1>
-        <small className="author">
-            Written by
-            <Link className="link" href={`/editor/${author.name}`}>
-                <div className="image">
-                    <NextImage
-                        src={`/editor/${author.image}`}
-                        alt={`${author.name}'s profile image`}
-                        width={28}
-                        height={28}
-                        quality={100}
-                    />
-                </div>
-                {author.name}
-            </Link>
-            On {created}
-        </small>
+    <header className="flex flex-col w-full mt-8 sm:mt-12 mb-6">
+        <h1 className="text-5xl font-semibold text-gray-900 dark:text-gray-100 m-0">
+            {title}
+        </h1>
+        <WrittenBy author={author} created={created} prefix="Written by" showDate />
         <Image
             src={`/content/${slug}/${src}`}
             alt={title}

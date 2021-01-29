@@ -6,19 +6,13 @@ import { BlogLayoutComponent } from './types'
 import './blog.sass'
 
 const BlogLayout: BlogLayoutComponent = (props) => {
-    let { children, title, author, image, slug, time } = props
+    let { children, ...author } = props
 
     return (
         <>
             <OpenGraph {...props} />
             <main id="blog">
-                <BlogHeader
-                    title={title}
-                    slug={slug}
-                    author={author}
-                    image={image}
-                    time={time}
-                />
+                <BlogHeader {...author} />
                 {children}
             </main>
         </>
