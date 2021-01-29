@@ -4,7 +4,7 @@ import saltyAom from './saltyaom'
 
 import { Author } from './types'
 
-export const authors = transformSlugToKey<Author>('name', [saltyAom])
+export const authors = transformSlugToKey<Author>('slug', [saltyAom])
 
 export { saltyAom }
 

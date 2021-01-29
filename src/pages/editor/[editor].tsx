@@ -40,7 +40,7 @@ export const getStaticProps: GetStaticProps<EditorPageProps> = async (
     const author = authors[editor]
 
     const contents =
-        metadataList.filter((metadata) => metadata.author.name === editor) || []
+        metadataList.filter((metadata) => metadata.author.slug === editor) || []
 
     return {
         props: {

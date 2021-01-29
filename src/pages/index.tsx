@@ -1,5 +1,8 @@
 const Landing = () => (
-    <h1 className="text-yellow-300">Hello World</h1>
+    <>
+        <img src="https://walfiegif.files.wordpress.com/2020/12/out-transparent-23.gif?w=371&h=458" alt="fbk" />
+        <h1>Underconstruction</h1>
+    </>
 )
 
 export default Landing
