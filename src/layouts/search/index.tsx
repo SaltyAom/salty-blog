@@ -1,7 +1,6 @@
 import Head from 'next/head'
 
-// @ts-ignore
-import FeatherIcon from 'feather-icons-react'
+import { Search as SearchIcon } from 'react-feather'
 
 import styles from './search-layout.module.sass'
 
@@ -43,7 +42,7 @@ const SearchLayout: SearchLayoutComponent = ({ children, onSearch }) => (
                             className={`${styles['search-submit']} justify-center items-center appearance-none text-2xl text-gray-400 pt-2 hover:text-blue-400 transition-colors bg-transparent border-0 outline-none cursor-pointer`}
                             type="submit"
                         >
-                            <FeatherIcon icon="search" size="24" />
+                            <SearchIcon size="24" />
                         </button>
                     </div>
                 </form>

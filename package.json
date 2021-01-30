@@ -15,7 +15,6 @@
 	"dependencies": {
 		"@mdx-js/react": "^1.6.22",
 		"dayjs": "^1.10.4",
-		"feather-icons-react": "^0.4.1",
 		"fuse.js": "^6.4.6",
 		"next": "10.0.4",
 		"next-ga": "^2.3.4",
@@ -24,6 +23,7 @@
 		"prismjs": "^1.23.0",
 		"react": "npm:@preact/compat",
 		"react-dom": "npm:@preact/compat",
+		"react-feather": "^2.0.9",
 		"react-prism": "^4.3.2",
 		"storeon": "^3.1.4",
 		"tailwindcss": "npm:@tailwindcss/postcss7-compat"
