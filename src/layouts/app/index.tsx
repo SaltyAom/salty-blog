@@ -1,5 +1,12 @@
 import { FunctionComponent } from 'react'
 
-const AppLayout: FunctionComponent = ({ children }) => <>{children}</>
+import Navigation from './navigation'
+
+const AppLayout: FunctionComponent = ({ children }) => (
+    <>
+        <Navigation />
+        {children}
+    </>
+)
 
 export default AppLayout

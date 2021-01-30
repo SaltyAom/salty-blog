@@ -1,8 +1,29 @@
-const Landing = () => (
-    <>
-        <img src="https://walfiegif.files.wordpress.com/2020/12/out-transparent-23.gif?w=371&h=458" alt="fbk" />
-        <h1>Underconstruction</h1>
-    </>
+import { FunctionComponent } from 'react'
+
+import { GetStaticProps } from 'next'
+
+import { Metadata } from '@contents'
+import metadataList from '@contents/list'
+
+import { Post } from '@components/organisms'
+import LandingLayout from '@layouts/landing'
+
+interface Blogs {
+    blogs: Metadata[]
+}
+
+const Landing: FunctionComponent<Blogs> = ({ blogs }) => (
+    <LandingLayout>
+        {blogs.map((content) => (
+            <Post {...content} />
+        ))}
+    </LandingLayout>
 )
+
+export const getStaticProps: GetStaticProps<Blogs> = async () => ({
+    props: {
+        blogs: metadataList
+    }
+})
 
 export default Landing

@@ -79,6 +79,12 @@ module.exports = withPlugins(
                 '~': join(__dirname)
             }
 
+            if (!options.isServer) {
+                config.node = {
+                    fs: 'empty'
+                }
+            }
+
             return config
         }
     }

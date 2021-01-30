@@ -1,10 +1,8 @@
 import { transformSlugToKey } from '@blog/services'
 
-import helloWorld from './hello-world'
-
+import metadataList from './list'
 import { Metadata } from './types'
 
-export const metadataList = [helloWorld]
 const metadatas = transformSlugToKey<Metadata>('slug', metadataList)
 
 export { getContent } from './helpers'

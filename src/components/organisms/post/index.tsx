@@ -17,8 +17,8 @@ export const Post: FunctionComponent<Metadata> = ({
     },
     time: { created }
 }) => (
-    <NextLink href={`/content/${slug}`}>
-        <a className="mt-4 mb-8 no-underline">
+    <NextLink href="/content/[content]" as={`/content/${slug}`}>
+        <a className="mt-2 mb-10 no-underline">
             <article>
                 <Image
                     className="mb-6 mx-2"

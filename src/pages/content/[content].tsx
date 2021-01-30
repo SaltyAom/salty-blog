@@ -2,7 +2,7 @@ import { FunctionComponent } from 'react'
 
 import { GetStaticPaths, GetStaticProps } from 'next'
 
-import store, { StoreProvider } from '@models'
+import { StoreProvider } from '@models'
 
 import { BlogLayout } from '@layouts'
 

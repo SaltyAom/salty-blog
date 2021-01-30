@@ -2,7 +2,9 @@ import { FunctionComponent } from 'react'
 
 import { GetStaticPaths, GetStaticProps } from 'next'
 
-import { Metadata, metadataList } from '@contents'
+import { Metadata } from '@contents'
+import metadataList from '@contents/list'
+
 import { Author, authors } from '@authors'
 
 import EditorLayout from '@layouts/editor'

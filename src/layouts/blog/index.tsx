@@ -11,7 +11,9 @@ const BlogLayout: BlogLayoutComponent = (props) => {
     return (
         <>
             <OpenGraph {...props} />
-            <main className={styles['blog-layout']}>
+            <main
+                className={`${styles['blog-layout']} w-full py-4 px-6 mt-10 mb-4 sm:my-8 mx-auto`}
+            >
                 <BlogHeader {...author} />
                 {children}
             </main>

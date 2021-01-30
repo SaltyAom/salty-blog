@@ -4792,6 +4792,11 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "2.1.1"
 
+feather-icons-react@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/feather-icons-react/-/feather-icons-react-0.4.1.tgz#d2333ec7e87c8a54c6879181f7df09d598a38302"
+  integrity sha512-rrnLdXpko9NKBdu2dAL3cdn4XXg6VualIqGH7WaDTZnE/Hz1bKWktQPmSsgDSO83Pj4H3uaPzY73zgecqOjDYQ==
+
 figgy-pudding@^3.5.1:
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/figgy-pudding/-/figgy-pudding-3.5.2.tgz#b4eee8148abb01dcf1d1ac34367d59e12fa61d6e"
@@ -5018,6 +5023,11 @@ functional-red-black-tree@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
   integrity sha1-GwqzvVU7Kg1jmdKcDj6gslIHgyc=
+
+fuse.js@^6.4.6:
+  version "6.4.6"
+  resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-6.4.6.tgz#62f216c110e5aa22486aff20be7896d19a059b79"
+  integrity sha512-/gYxR/0VpXmWSfZOIPS3rWwU8SHgsRTwWuXhyb2O6s7aRuVtHtxCkR33bNYu3wyLyNx/Wpv0vU7FZy8Vj53VNw==
 
 gauge@~2.7.3:
   version "2.7.4"

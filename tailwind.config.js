@@ -13,6 +13,10 @@ module.exports = {
                 preload: {
                     DEFAULT: '#f3f4f6',
                     dark: '#313131'
+                },
+                system: {
+                    DEFAULT: '#edf2f7',
+                    dark: '#4a5568'
                 }
             }
         }
