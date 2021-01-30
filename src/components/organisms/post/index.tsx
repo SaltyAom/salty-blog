@@ -22,6 +22,7 @@ export const Post: FunctionComponent<Metadata> = ({
             <article>
                 <Image
                     className="mb-6 mx-2"
+                    quality={75}
                     src={`/content/${slug}/${src}`}
                     width={width}
                     height={height}
