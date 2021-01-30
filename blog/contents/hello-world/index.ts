@@ -1,6 +1,6 @@
 import { saltyAom } from '@authors'
 
-import { time } from '../helpers'
+import { time } from '@blog/services'
 
 import { Metadata } from '../types'
 

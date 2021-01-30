@@ -18,10 +18,12 @@ const SearchLayout: SearchLayoutComponent = ({ children, onSearch }) => (
             <header
                 className={`${styles['search-container']} flex flex-col w-full justify-center mx-auto px-2`}
             >
-                <p className="text-gray-300 dark:text-gray-400 m-0 mb-1">Search</p>
+                <p className="text-gray-300 dark:text-gray-400 m-0 mb-1">
+                    Search
+                </p>
                 <form onSubmit={onSearch} className="w-full">
                     <div
-                        className={`${styles['search-box']} flex flex-row bg-system dark:bg-system-dark w-full rounded overflow-hidden`}
+                        className={`${styles['search-box']} flex flex-row bg-system dark:bg-preload-dark w-full rounded overflow-hidden`}
                     >
                         <label
                             className="flex flex-row flex-1 pl-1"
@@ -34,6 +36,7 @@ const SearchLayout: SearchLayoutComponent = ({ children, onSearch }) => (
                                 type="text"
                                 placeholder="Awesome Story"
                                 autoComplete="off"
+                                enterKeyHint="search"
                             />
                         </label>
                         <button
@@ -45,7 +48,7 @@ const SearchLayout: SearchLayoutComponent = ({ children, onSearch }) => (
                     </div>
                 </form>
             </header>
-            <main>{children}</main>
+            <main className="flex flex-col w-full">{children}</main>
         </section>
     </>
 )

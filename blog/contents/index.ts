@@ -5,7 +5,7 @@ import { Metadata } from './types'
 
 const metadatas = transformSlugToKey<Metadata>('slug', metadataList)
 
-export { getContent } from './helpers'
+export { getContent } from '@blog/services'
 
 export type { Metadata, Metadatas, MetaImage, MetaTime } from './types'
 

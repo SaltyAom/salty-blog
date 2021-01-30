@@ -1,0 +1,220 @@
+เมื่อพูดถึง Virtual DOM หลายคนก็มักจะนึกถึง React, Library แรกที่เริ่มใช้ Virtual DOM ในการทำงาน แต่ว่าข้อจำกัดของ React สมัยก่อนคือการที่มี Root Node ได้แค่อันเดียว และเวลาจะ render อะไรก็ต้องมี wrapper เพื่อให้ Render ได้
+
+ใน React 0.x แบบนี้ถือว่าใช้ได้
+```javascript
+const Card = () => (
+    <div>
+        <h1>Hello World</h1>
+        <p>I'm written in Virtual DOM</p>
+    </div>
+)
+
+render(Card, document.body)
+```
+
+แต่แบบนี้ถือว่าใช้ไม่ได้
+```javascript
+const Card = () => (
+    <h1>Hello World</h1>
+    <p>I'm written in Virtual DOM</p>
+)
+
+render(Card, document.body)
+```
+
+การที่เราสร้าง Multiple Root Node ไม่ได้เป็นเพราะว่าโครงสร้างของ Virtual DOM ไม่ได้ support มาให้สามารถทำได้แต่แรกแล้ว
+
+โดย JSX ที่เราเขียนจะถูกแปลงเป็น Function สำหรับการสร้าง Object ขึ้นมา หมายความว่า JSX นี้:
+```javascript
+<h1>Hello World</h1>
+```
+
+จะถูกแปลงเป็น Function React.createElement แบบนี้
+```javascript
+h(
+    'h1',
+    null,
+    'Hello World'
+)
+```
+
+เพราะว่า JavaScript ไม่สามารถที่จะประมวลผลกับ DOM โดยตรงได้ เลยจำเป็นที่จะต้องแปลง DOM เก็บไว้ในรูปแบบอื่นเพื่อให้ทำงานใน JavaScript ได้
+
+ถ้าหากว่ายังไม่เคยได้อ่านหลักการและโครงสร้างของ Virtual DOM การทำงานของ Virtual DOM ก็แนะนำให้อ่านบทความนี้ก่อน
+
+## React.render
+React.render() จะรับค่าของ React Element เข้ามาหนึ่งตัวโดยกำหนดว่าจะต้องมี Root Node แค่ตัวเดียว (ซึ่งก็เป็นเหตุผลที่ทำให้ React รับค่ามาแค่ตัวเดียวเหมือนกัน)
+
+```javascript
+render(Card, document.body)
+```
+
+ส่วนจะมี childNodes กี่ตัวก็ได้แล้วแต่อยากให้มีเลยเพราะว่าการ Hydrate ของ Virtual DOM เป็น Recursive Function โดยทุกๆ childNodes จะถูกประมวลผลเหมือน Root Node ทำให้จะมี childNodes กี่ตัวก็ได้เพราะยังไง React ก็จะประมวลผลทีละตัวอยู่ดี
+
+![300x204 | Recursion](vdom-fragment/recursion.gif)
+
+แต่่ว่าในตั้งแต่ React 16.2 ทุกอย่างก็เปลี่ยนไป
+
+## Fragment
+Fragment เป็น JSX Element ของ React ที่สามารถที่จะแก้ไขปัญหาของ Root Node เดียวได้โดยการแทนตัวเองเป็น Root Node แล้วตัวเองจะไม่ถูก Render ออกมา
+```javascript
+import React, { Fragment } from 'react'
+
+const Card = () => (
+    <Fragment>
+        <h1>Hello World</h1>
+        <p>I'm written in Virtual DOM</p>
+    </Fragment>
+)
+
+render(Card, document.body)
+```
+
+ที่ถูก Render ออกมาก็จะเป็น childNodes ที่ไม่มี Fragment:
+```javascript
+<body>
+    <h1>Hello World</h1>
+    <p>I'm written in Virtual DOM</p>
+</body>
+```
+
+ทีนี้ก็จะไม่มี wrapper มาครอบให้กวนใจอีกต่อไป~ ถือว่าเป็นการแก้ไขปัญหาที่ฉลาดมากของทีม React
+![576x640 | Clap Clap~](vdom-fragment/clap.gif)
+
+แต่ว่าคำถามก็คือมันใช้ได้ แต่ว่าหลักการ การทำงานของมันคือยังไงกันแน่
+
+## หลักการของ Fragment
+Fragment เป็นหลักการ `การสร้าง Document Object ที่ไม่มี Parent Element` โดยจะเก็บเพียงแค่ ChildNodes เอาไว้ `เวลาถูก Render ออกมาจะไม่มีตัวเองจะไม่ถูกแสดง`ออกมาและถูกลบทิ้งไปเหลือไว้แค่ childNodes
+
+โดยจริงๆ แล้ว Fragment ได้หลักการมาจาก [Document Fragment](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment) อีกทีนึง ซึ่งสามารถใช้ใน DOM จริงๆ ได้โดยการสร้าง:
+```javascript
+let fragment = document.createDocumentFragment()
+```
+
+หรือจะสร้างจาก class ก็ได้ แต่นิยมใช้แบบด้านบนมากกว่า:
+```javascript
+let fragment = new DocumentFragment()
+```
+
+โดยปกติแล้วเราจะไม่สามารถเก็บ Document Object หลายๆ อันไว้ใน ตัวแปรเดียวกันโดยไม่ใช้ Array หรือ Object ที่เอาไปใช้กับ DOM ตรงๆ ไม่ได้ Fragment เลยถูกออกแบบมาเพื่อแก้ไขปัญหานี้
+
+เวลาที่ Fragment ถูก append เข้าไปใน DOM จะเหลือเพียงแค่ childNodes โดยหลักการนี้ก็ถูกใช้ใน Shadow DOM เหมือนกัน
+```javascript
+let fragment = document.createDocumentFragment(),
+    h1 = document.createElement('h1')
+
+h1.appendChild(document.createTextNode("Hello World"))
+
+console.log(h1) // Document Fragment: <h1>Hello World</h1>
+
+fragment.appendChild(h1)
+fragment.appendChild(h1)
+
+console.log(fragment) // Document Fragment: <h1>Hello World</h1><h1>Hello World</h1>
+
+document.body.appendChild(fragment)
+```
+
+ซึ่งถ้าเราลองไปดูใน body ก็จะเห็นได้ว่าจะมีแค่ `h1` ที่เราตั้งไว้ถูก render ออกมาเท่านั้น:
+```javascript
+<body>
+    <h1>Hello World</h1>
+    <h1>Hello World</h1>
+</body>
+```
+
+Fragment ทำให้การเก็บตัวแปรของ Document Object ไว้ในตัวแปรเดียวเป็นไปได้ แล้วก็สามารถเอาไปใช้กับ DOM ได้ตรงๆ เลย
+
+## React.Fragment
+โดย React ได้เอาแนวคิดของ Fragment ตรงนี้เข้ามาใช้ โดยการสร้าง Document Fragment ขึ้นมาแทนกับตำแหน่งต่างๆ ของ Virtual DOM
+
+โดยจริงๆ แล้ว React ก็ไม่ได้ใช้ createDocumentFragment() ตรงๆ อย่างเดียว แต่การหลักการหลักๆ ก็คล้ายๆ กับ Document Framgnet นั่นแหละ
+
+แต่ดูเหมือนว่าอะไรๆ จะไม่เป็นไปได้อย่างที่คิดง่ายๆ เพราะว่าถึงแม้ว่าเราจะ hydrate Virtual DOM ไปแล้ว แต่ว่าใน Virtual DOM ก็จะยังจำ Fragment ว่าเป็น Element ตัวหนึงที่ต้องถูก append ออกมาอยู่ดี
+
+React เลยจำเป็นต้องมีการ Map Attributes และ`ยกเว้นการเช็คเมื่อมี Fragment` เข้ามาใช้อีกทั้งยังต้อง`ข้ามการ Diff เมื่อมี Fragment` ถูกใช้งาน
+
+ดังนั้นจะบอกว่าการเพิ่ม document.createDocumentFragment() เข้าไปเฉยๆ ก็ไม่สามารถที่จะทำได้ง่ายซักเท่าไหร่
+
+```javascript
+import React, { Fragment } from 'react'
+
+const App = () => (
+    <Fragment>
+        <h1>Hello World</h1>
+        <p>I'm written in Fragment</h1>
+    </Fragment>
+)
+```
+
+โดยใน React ได้มีการประกาศใน JSX.InstinctElement ว่า Fragment เป็น Valid Element ซึ่งต้องแลกมาด้วยการเพิ่ม if-else เข้ามาอีกนิดหน่อย รวมถึงการ Validate ว่า childNodes มีจริงหรือเปล่า แต่ก็แลกมาด้วย Developer Experience ที่ดีขึ้น
+
+ดังนั้นเวลาแปลงเป็น Object ก็จะเทียบง่ายๆ ได้เป็น
+```javascript
+{
+    ...
+    childNodes: [
+        {
+            type: 'h1',
+            ...
+        }
+    ]
+}
+```
+
+โดยเดิมที่ Fragment จะถูกแทนที่ด้วยการที่ไม่มี `type` ที่แสดงถึง nodeName เหมือนกับ Element อื่นๆ
+```javascript
+console.log(<h1 />)       // { type: 'h1', ... }
+console.log(<Fragment />) // { ... }
+```
+
+ทำให้การที่เราเขียน Element ที่ไม่มีชื่อกลายเป็น Fragment โดยอัตโนมัติ:
+```javascript
+console.log(<></>) // { ... }
+```
+
+
+ดังนั้นจริงๆ แล้ว Fragment ก็แค่ component ที่ render `<></>` ออกมาแค่นั้น เพราะว่าสำหรับบางคนการที่ Element มีชื่อมันค่อนข้างที่จะ Make Sense มากกว่า Element ที่ไม่มีชื่อเลยทำให้มี Module แยกออกมา
+```javascript
+import React, { Fragment } from 'react'
+
+const Card = () => (
+    <Fragment />
+)
+```
+
+อีกทั้ง Element ที่มีชื่อจะสามารถทำเป็นแท็ก Self Closing ได้ แต่ในความเป็นจริงแล้วก็คงไม่มีใครใช้ Fragment แบบไม่มี childNodes อยู่แล้ว
+```javascript
+<Fragment /> // Valid
+<></> // Valid
+< /> // Not Valid
+```
+
+![498x498 | Thonking](vdom-fragment/thonking.gif)
+
+เวลาจะสร้าง Document Fragment ก็แค่คือการข้าม type ที่เป็น undefined แล้วแทนเป็น Fragment โดยการสร้าง Document Fragment ขึ้นมาเก็บ
+
+ถ้าจะให้เห็นเป็นภาพ เราสามารถ mock code ได้แบบนี้:
+```javascript
+// Mock create DOM from vNode
+
+const create = (vnode) => {
+    let _node
+
+    if(typeof _node.type !== "undefined")
+        if(validate(_node.type))
+            _node = document.createElement(_node.type)
+        else
+            throw ("Invalid Element")
+    else
+        _node = document.createDocumentFragment()
+
+    ...
+    Some Code
+    ...
+
+    return _node
+}
+```
+
+ทำให้เราสามารถที่จะ Append vNode ที่เป็น Fragment ออกมาได้เหมือนกับว่ามี Root Node หลายอันได้ ทั้งๆ ที่จริงๆ แล้วเรามี Root Node อยู่ก็คือ Fragment เพียงแค่ว่าเรามองไม่เห็นแค่นั้นเอง

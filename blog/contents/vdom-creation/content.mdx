@@ -1,0 +1,727 @@
+เนื้อหานี้เหมาะกับผู้ที่มีความเชี่ยวชาญทางด้าน JavaScript ฝั่ง Frontend
+
+ในการพัฒนาเว็บไซต์ขึ้นมาซักเว็บหนึ่ง โครงสร้างทุกอย่างล้วนมาจาก DOM (Document Object Model) ซึ่งเป็น Object Tree ประมวลผลด้วย JavaScript แต่ด้วยความที่มันมีขนาดใหญ่เอาซะมากๆ การที่เราจะแก้ไขใหม่ทั้งหมดใช้เวลาและทรัพยากรสูง จึงเกิดการมองหาวิธีที่ดีขึ้นก็นี้แทน
+
+## Virtual DOM
+
+ทุกอย่างมันเกิดขึ้นเมื่อใน 2011 เมื่อ Jordan Walke, Software Engineer ที่ Facebook ได้คิดวิธีที่จะเพิ่มประสิทธิภาพได้ดีกว่าการลบ DOM Node แล้วเขียนใหม่ ซึ่งนั่นก็คือ การแก้ไขเฉพาะส่วนที่ต้องการแทนที่จะลบและสร้าง Node ขึ้นมาใหม่ จนกลายมาเป็น Library ที่เรารู้จักกันว่า React ในปัจจุบัน
+
+ในตอนนี้มีหลาย Library นอกจาก React ที่เอา Concept ของ Virtual DOM มาใช้ไม่ว่าจะเป็น Vue, Stencil, Lit-Element, etc.
+
+ทำให้เดี๋ยวนี้กลายเป็นว่าการที่จะมา Virtual DOM มาใช้เป็นเรื่องที่ง่ายไปซะงั้น เพราะถึงแม้ว่าเราจะไม่รู้วิธีเขียนก็สามารถที่ใช้ Virtual DOM ได้
+
+ดังนั้นเราจะย้อนกลับไปปี 2011 อีกครั้งและมาดู concept ของ Virtual DOM ในรูปแบบที่ง่ายที่สุดเท่าที่จะทำได้ และสร้างมันขึ้นมาจาก 0 กันดีกว่า
+
+## Concept ของ Element
+
+1 Element ของ HTML ที่ดูแสนจะง่ายดาย ซึ่งเป็นอะไรที่ Basic สุดๆ ไปเลยในการเขียนเว็บที่ไม่ว่าใครก็เขียนขึ้นมาได้ง่ายเอาซะมากๆ สำหรับเรา แต่สำหรับ JavaScript แล้ว, กลับเห็นทุกอย่างเป็น Object ไม่ว่ามันจะดูง่ายแค่ไหนก็ตาม
+
+```javascript
+// HTML
+<h1>Heading 1</h1>
+
+// สิ่งที่ JavaScript ในรูปแบบที่ง่ายที่สุด
+{
+    tagName: "h1",
+    children: [],
+    childNodes: [
+        {
+            textContet: "Heading 1",
+            ...TextNodeAttributes,
+            ...nodeReference
+        }: Text { {Symbol(Symbol.toStringTag): "Text", splitText: ƒ, constructor: ƒ} }
+    ],
+    ...attributes,
+    ...nodeReference
+}: HTMLHeadingElement: { Symbol(Symbol.toStringTag): "HTMLHeadingElement", constructor: ƒ }
+```
+
+จากที่เห็น JavaScript ไม่ได้เห็น h1 เหมือนที่เราเห็นว่าเป็นแท็กโล่งๆ แล้วมีคำว่า Heading 1 อยู่ข้างใน แต่ JavaScript เห็น h1 เป็น Object ขนาดใหญ่ที่เก็บ Attributes และ Reference ทั้งหมดเท่าที่ Element นั้นจะมีได้
+
+โดยปกติแล้วถ้าเรา`ไม่กำหนด Attribute, JavaScript ก็จะกำหนดให้เป็น string ว่าง` โดยวิธีการสร้าง Element ใน JavaScript การสามารถที่จพทำได้เหมือนกัน โดยการใช้คำสั่ง document.createElement(TagName)
+
+```javascript
+document.createElement('h1') // สร้าง Element โดยมี nodeName ชื่อ h1
+```
+
+ซึ่งถ้าเราจะสร้าง Element h1 เมื่อกี้การและเพิ่มเข้า body การจะต้องใช้ Reference ช่วย
+
+```javascript
+let title = document.createElement('h1') // สร้าง Element โดยมี nodeName ชื่อ h1
+title.textContent = 'Heading 1' // ตั้ง textContent ของ h1 เป็น 'heading' ซึ่งจะเพิ่ม childNodes: ["Heading 1"] ไปด้วย
+
+document.body.appendChild(title) // Append เข้า body
+```
+
+โดยที่เราทำก็คือการเก็บตัวแปรของ element h1 และตั้ง textContent จากนั้นก็ append เข้าไปใน body ซึ่งถ้าสังเกต appendChild ก็ไม่ได้เป็น Attributes ของ HTMLElement แต่กลับมีขึ้นมาได้ เพราะว่า Document Object ไม่ได้แค่เก็บ attributes ของ HTML อย่างเดียว แต่เก็บทุกอย่างเราอาจจะได้ใช้ขึ้นมาได้
+
+## เพราะมันมากเกินไปที่จะสร้างใหม่
+
+ดังนั้นสิ่งที่ Virtual DOM ทำก็คือการใช้ของที่มีอยู่แล้วแล้วเปลี่ยนซะ จะได้ไม่ต้องสร้างทุกอย่างขึ้นมาใหม่อีกรอบ ทำให้ทุกอย่างเร็วขึ้นมากๆ
+
+แต่คำถามคือ แล้วเราจะทำยังไงล่ะถึงจะสามารถที่จะทำได้แบบนั้นได้ เราจะรู้ได้ยังไงว่า เราจะต้องเปลี่ยนตรงไหนบ้างกันแน่
+
+ด้วยความที่ทุกอย่างถูกเก็บเป็น Object ใน JavaScript อยู่แล้ว เราก็แค่สร้าง Object ที่เหมือนกันขึ้นมาเลยสิ ซึ่งนั้นก็คือ หลักการแรกของ Virtual DOM
+
+การสร้าง Object ที่เป็นตัวแทนของ DOM ขึ้นมา แล้วจากนั้นก็แก้ไขมันซะ แต่แทนที่เราจะสร้างมันขึ้นมาทั้งหมด เราก็เก็บแค่ส่วนที่เราต้องการซะสิ
+
+```javascript
+{
+    nodeName: "h1",
+    childNodes: [
+        "Heading 1"
+    ]
+}
+```
+
+ซึ่งในยุคแรกที่ React ยังไม่มี JSX ก็ใช้วิธีการสร้าง function ขึ้นเพื่อช่วยสร้าง Object นี้ขึ้นมา
+
+```javascript
+createElement = (nodeName, attributes, ...childNodes) => ({
+    nodeName,
+    ...attributes,
+    childNodes
+})
+
+createElement('h1', null, 'Heading 1')
+```
+
+ซึ่ง Object ด้านบนก็ mimic มาจาก HTMLElement จริงๆ เลยเพื่อที่จะเปรียบเทียบได้ง่ายขึ้น
+
+แต่ว่ามันไม่ได้ง่ายขนาดนั้นเพราะว่าเรายังจำเป็นที่จะต้อง
+
+-   เปรียบเทียบหาว่ามีอะไรที่ต้องเปลี่ยนไปบ้าง (Diffing)
+-   สร้าง Element จาก Object ที่มีแล้วไป Update
+-   การหา Element Reference เพื่อไป Update
+-   ฯลฯ
+
+# สร้าง Virtual DOM ในรูปแบบที่ง่ายที่สุด
+
+Note วิธีนี้เป็นวิธีที่ผู้เขียนคิดขึ้นมาจากการทดลองหลายๆ ครั้ง และเพื่อความง่ายในการสพัฒนามากที่สุด ดังนั้นจึงอาจจะไม่เหมือนกับของ React 0.x ซะทีเดียว และจะอิงเฉพาะ Virtual DOM ที่เฉพาะ Depht-First Search ในการเปรียบเทียบ Node เท่านั้น
+
+เราจะเริ่มจากการสร้าง Object ขึ้นมาแทนก่อน
+
+```javascript
+const createElement = (nodeName, attributes, ...childNodes) => ({
+    nodeName: nodeName.toLowerCase(),
+    attributes: attributes === null ? false : attributes,
+    childNodes
+})
+```
+
+ด้วยความที่บางครั้ง HTML ที่สร้างขึ้นมาจะ
+
+เป็นการสร้าง Function createElement ที่ออกมาในรูปแบบ Object แทน
+
+```
+createElement("h1", null, "Heading 1")
+/*
+{
+    nodeName: "h1",
+    childNodes: [
+        "Heading 1"
+    ]
+}
+*/
+```
+
+แค่นี้เราก็ Loop Object นี้เพื่อ Update ได้แล้ว
+
+## Diffing
+
+แน่นอนว่าถึงเราจะมี Object ขึ้นมาแล้ว เราจะเปรียบเทียบ Object 2 อันนี้ได้ยังไง? แน่นอนว่าเราก็ต้องเขียนขึ้นเพื่อหาเอง โดยเราเรียกขั้นตอนนี้ว่าการ Diffing
+
+ซึ่งในขั้นนี้เราจะเปรียบเทียบ Object 2 อันเพื่อหาว่า Object 2 อันนี้ต่างกันอย่างไง แล้วสร้าง Object createElement ขึ้นมาเพื่อเก็บค่าที่ต่างกัน
+
+สมมติว่าเราสร้าง Input ขึ้นมาอันนึง
+
+```javascript
+let oldElementModel = {
+    nodeName: "input"
+    class: "old-class",
+    value: "Old Value"
+}
+
+let newElementModel = {
+    nodeName: "input"
+    class: "new-class",
+    value: "New Value"
+}
+```
+
+เพื่อลดขั้นตอนความยุ่งยากโดยการเปลี่ยนมาใช้ createElement แทน
+
+```javascript
+let oldElementModel = createElement(
+        'input',
+        {
+            class: 'old-class',
+            value: 'Old Value'
+        },
+        null
+    ),
+    newElementModel = createElement(
+        'input',
+        {
+            class: 'new-class',
+            value: 'New Value'
+        },
+        null
+    )
+```
+
+ซึ่งถ้าเราเปรียบเทียบด้วยตาก็จะได้เป็น Object เป็นแบบนี้
+
+```javascript
+{
+    class: "new-class",
+    value: "New Value"
+}
+```
+
+แต่ว่าในความเป็นจริงแล้ว เรากำลังเปรียบเทียบกับ DOM จริงๆ อยู่ดังนั้น oldElementModel จะเป็น DOM จริงๆ เสมอ และ newElementModel จะมาจาก createElement ที่เรากำหนดขึ้นเองเสมอ ดังนั้น Object จริงๆ จะออกมาในรูปแบบนี้
+
+```javascript
+let oldElementModel = {
+    tagName: "input",
+    class: "old-class"
+    value: "old Value",
+    ...attributes,
+    ...nodeReference
+}: HTMLHeadingElement: { Symbol(Symbol.toStringTag): "HTMLHeadingElement", constructor: ƒ }
+
+let newElementModel = createElement(
+    "input",
+    {
+        class: "new-class",
+        value: "New Value"
+    },
+    null
+) /*
+    ค่าที่ได้
+    {
+        nodeName: "input"
+        class: "new-class",
+        value: "New Value"
+    }
+*/
+```
+
+ซึ่งถ้าถ้าสังเกต ยังไง newElementModel ก็น้อยกว่า oldElementModel แน่นอน ดังนั้นเราก็สามารถที่จะเขียน for loop ขึ้นมาเพื่อเทียบค่าได้เลย
+
+```javascript
+const diff = (current, old) => {
+    const diff = {}
+
+    Object.keys(newElementModel).map((property) => {
+        if (newElementModel[property] !== oldElementModel[property])
+            diff[property] = newElementModel[property]
+    })
+}
+
+diff(newElementModel, oldElementModel)
+/*
+    {
+        nodeName: 'input',
+        class: 'new-class',
+        value: 'New Value'
+    }
+*/
+```
+
+แต่เดี๋ยวก่อน! ถ้าคิดว่าแค่นี้เราก็ใช้ Diffing Algorithms ได้แล้วจริงๆ ล่ะก็ คุณคิดผิดอย่างหนักเลยล่ะ!
+
+ในความเป็นจริงแล้ว Attributes ไม่ได้มีแต่ที่เก็บเป็น string อย่างเดียว แต่ยังมีแบบที่เก็บเป็น Object และ Array ด้วย
+
+```javascript
+let h1 = document.createElement('h1')
+
+h1.style.color = 'red'
+h1.style.fontSize = '16px'
+
+console.log(h1) // <h1 style="color: red; font-size: 16px"></h1>
+
+let div = document.createElement('div')
+div.appendChild(div)
+
+document.body.appendChild(div) /* 
+    <div>
+        <h1 style="color: red; font-size: 16px"></h1>
+    </div>
+*/
+
+console.log(div)
+```
+
+ซึ่งถ้าเราลองเช็ค Prototype ของ div ที่เราสร้างเมื่อกี้ก็จะได้ประมาณว่า
+
+```javascript
+{
+    nodeName: "div",
+    childNodes: [
+        {
+            nodeName: "h1",
+            style: {
+                color: "red",
+                fontSize: "16px"
+            },
+            ...attributes,
+            ...nodeReference
+        }: HTMLHeadingElement: { Symbol(Symbol.toStringTag): "HTMLHeadingElement", constructor: ƒ }
+    ],
+    ...attributes,
+    ...nodeReference
+}: HTMLHeadingElement: { Symbol(Symbol.toStringTag): "HTMLHeadingElement", constructor: ƒ }
+```
+
+จากที่สังเกตก็คือ `childNodes เป็น array ที่ทำหน้าที่เก็บ Node` ของเอาไว้ และ `style ถูกเก็บเป็น Object` ดังนั้นเราจะใช้ Object.keys() แล้ว loop ตรงๆ ไปชั้นเดียวไม่ได้
+
+ด้วยความโชคดีที่มีไม่กี่ property ที่เก็บเป็น array และพวกนี้เป็น Readonly Array เท่านั้น ดังนั้นเราเลยไม่ต้องมากังวลว่าเราจะตั้งเปรียบเทียบ Array แต่ก็ยังต้องระวัง Property ที่เก็บ Object อยู่ดี
+
+```javascript
+    style: {
+        color: "red",
+        fontSize: "16px"
+    }
+```
+
+ซึ่งถ้าเรากลับไปดูที่ createElement อีกรอบก็จะพบว่า
+
+```javascript
+createElement = (nodeName, attributes, ...childNodes) => ({
+    nodeName,
+    ...attributes,
+    childNodes
+})
+```
+
+เราได้ตัดเอา childNodes ไว้อีกอันนึงเลย ไม่ต้องไปเปรียบเทียบก็ได้ เพราะถึงเปรียบเทียบมาก็เอามาใช้ไม่ได้เพราะ childNodes ใน DOM จริง เป็น Readonly Array ทำให้เราไม่สามารถไปเปลี่ยนได้
+
+## เปรียบเทียบ Attributes
+
+ดังนั้นเราเลยต้องเปลี่ยน Diffing Algorithms ของเราให้เป็น Function แบบ Recursive
+
+```javascript
+const keys = (object) => Object.keys(object),
+    diff = (attributes, oldAttributes) => {
+        let _attributes = {},
+            intersect = keys(attributes).filter((property) =>
+                keys(oldAttributes).includes(property)
+            )
+
+        return _attributes
+    }
+```
+
+เราตั้ง Function `keys` เพื่อเอาไว้ย่อ code ที่อาจจะซ้ำบ่อยๆ ของ Object.keys() ลง จากนั้นเราก็เลือก property ที่ intersect กันมาก่อน จากนั้นก็เอามาเปรียบเทียบกัน
+
+```javascript
+const diff = (attributes, oldAttributes) => {
+    let _attributes = {},
+        intersect = keys(attributes).filter((property) =>
+            keys(oldAttributes).includes(property)
+        )
+
+    intersect.forEach((property) => {
+        if (attributes[property] !== oldAttributes[property])
+            return (_attributes[property] = attributes[property])
+    })
+
+    return _attributes
+}
+```
+
+จากนั้นเราก็ดักเคสที่เป็น Object ให้กลับไปทำ Function นี้อีกรอบ​แล้วค่อยส่งค่ากลับมาจนกว่าจะครบทั้ง Node แล้วส่งค่าที่ต่างกันออกมาในที่สุด
+
+```javascript
+let comparedSubsetAttributes = compareAttributes(
+    attributes[property],
+    oldAttributes[property]
+)
+
+return keys(comparedSubsetAttributes).length
+    ? (_attributes[property] = comparedSubsetAttributes)
+    : null
+```
+
+ซึ่งเอามาเปรียบเทียบก่อนแล้วค่อยเก็บเป็นตัวแปร จากนั้นมาเทียบดูว่ามีอะไรที่ต่างไหมจากการใช้ function keys (ซึ่งเราตั้งเป็นตัวย่อของ Object.keys() จากด้านบน) โดยที่`ถ้าเป็น 0 จะมีค่าเป็น falsy ก็จะไม่ถูกเขียนที่ Object _attributes`
+
+```javascript
+const compareAttributes = (attributes, oldAttributes) => {
+    let _attributes = {},
+        intersect = keys(attributes).filter((property) =>
+            keys(oldAttributes).includes(property)
+        )
+
+    intersect.forEach((property) => {
+        if (typeof attributes[property] === 'object') {
+            let comparedSubsetAttributes = compareAttributes(
+                attributes[property],
+                oldAttributes[property]
+            )
+
+            return keys(comparedSubsetAttributes).length
+                ? (_attributes[property] = comparedSubsetAttributes)
+                : null
+        }
+
+        if (attributes[property] !== oldAttributes[property])
+            return (_attributes[property] = attributes[property])
+    })
+
+    return _attributes
+}
+```
+
+แต่ในกรณีนี้ยังเหลือกรณีที่ ถ้า Property ไม่ intersect กันก็จะไม่ถูก Loop และจะไม่มีทางเขียนทับให้กลายเป็นไม่มีได้เด็ดขนาด ดังนนั้นเราเลยต้องหาเคสเอาแค่ค่าขวาและไม่อยู่ใน intersect
+
+```javascript
+keys(oldAttributes).filter((property) => {
+    if (!intersect.includes(property)) _attributes[property] = ''
+})
+```
+
+โดยเรา loop ที่ old Attributes จากนั้นก็ filter หา property ที่ไม่ได้อยู่ใน intersect และเขียนลง \_attributes ซะ
+
+หน้าตา function compareAttributes ก็จะเป็นแบบนี้
+
+```javascript
+const keys = (object) => Object.keys(object),
+    compareAttributes = (attributes, oldAttributes) => {
+        let _attributes = {},
+            intersect = keys(attributes).filter((property) =>
+                keys(oldAttributes).includes(property)
+            )
+
+        keys(oldAttributes).filter((property) => {
+            if (!intersect.includes(property)) _attributes[property] = ''
+        })
+
+        intersect.forEach((property) => {
+            if (typeof attributes[property] === 'object') {
+                let comparedSubsetAttributes = compareAttributes(
+                    attributes[property],
+                    oldAttributes[property]
+                )
+
+                return keys(comparedSubsetAttributes).length
+                    ? (_attributes[property] = comparedSubsetAttributes)
+                    : null
+            }
+
+            if (attributes[property] !== oldAttributes[property])
+                return (_attributes[property] = attributes[property])
+        })
+
+        return _attributes
+    }
+```
+
+แต่ว่าส่วนของการเปรียบเทียบ attributes เป็นแค่ส่วนหนึ่งเท่านั้น เรายัง`เหลือการเปรียบเทียบชื่อ tag และ childNodes` ด้วย ดังนั้น diff() ของเราในตอนนี้ก็จะเป็นแบบนี้ จากนั้นเพื่อแยก dom จริงออกจาก Virtual DOM, ใน DOM จริง .attributes จะมีค่าเป็น NamedNodeMap ซึ่งไม่ได้เก็บแบบเดียวกับที่ Virtual DOM เราเก็บ ดังนั้นต้องแยกเผื่อเคสนี้ด้วย
+
+```javascript
+let diff = (current, old) => {
+    attributes = compareAttributes(
+        current.attributes,
+        old
+    )
+
+    return { attributes }
+```
+
+แต่ว่าก็ในบางครั้งเวลาที่เราสร้าง Element เราก็อาจจะไม่ต้องการ attributes ก็ได้แล้วเราก็ใส่ค่าว่างไปเลย เช่น
+
+```javascript
+createElement('h1', null, 'Hello World')
+```
+
+ดังนั้นเราเลยต้องทำให้มันกลายเป็น Object ว่างไปด้วยถ้าได้ค่าเป็น null ซึ่งเราสามารถแก้จาก createElement แทนที่จะเปรียบเทียบค่าว่าเป็น null หรือเปล่าได้เลย ซึ่งถ้าเป็น false ก็จะง่ายต่อการเปรียบเทียบมากกว่า
+
+```javascript
+createElement = (nodeName, attributes, ...childNodes) => ({
+    nodeName,
+    attributes: attributes === null ? false : attributes,
+    childNodes
+})
+```
+
+และจากนั้นเราก็ไม่ให้ attribute ว่างไปเปรียบเทียบเพราะว่ามันเป็น attribute ว่าง
+
+```javascript
+let diff = (current, old) => {
+    let attributes = {}
+
+    if (typeof current.attributes === typeof old)
+        attributes = compareAttributes(
+            current.attributes,
+            old
+        )
+    else
+        attributes = current.attributes
+
+    return { attributes }
+```
+
+## ทำไมต้องแยก nodeName ออกจาก Attributes
+
+ใน Model ของ HTMLElement จะมี property ที่ชื่อ nodeName ซึ่งเอาไว้เก็บค่าของ ชื่อ tag ที่เราใช้ แต่ว่า Property `nodeName เป็น Readonly` ดังนั้นเราเลยไม่สามารถที่จะแก้ nodeName ได้ มีแต่การเขียนใหม่เท่านั้น ดังนั้นเราเลยสามารถที่จะ`แยกจากออกจาก comparerAttributes` ที่สามารถเขียนทับไปได้เลย
+
+ซึ่งถ้าย้อนกลับไปดู createElement อีกรอบ...
+
+```javascript
+createElement = (nodeName, attributes, ...childNodes) => ({
+    nodeName,
+    attributes: attributes === null ? false : attributes,
+    childNodes
+})
+```
+
+เราได้แยก nodeName เอาไว้แล้วเพื่อที่จะได้ไม่ต้องไปเปรียบเทียบกับ attributes ดังนั้น Function diff ของเราตอนนี้ก็จะเป็น
+
+```javascript
+let diff = (current, old) => {
+    if (current.nodeName !== old.nodeName) return current
+
+    let attributes = {}
+
+    if (typeof current.attributes === typeof old)
+        attributes = compareAttributes(
+            current.attributes,
+            old
+        )
+    else
+        attributes = current.attributes
+
+    return {
+        nodeName: false
+        attributes
+    }
+```
+
+เหมือนที่บอกไปก่อนหน้านี้ nodeName ไม่สามารถถูกแก้ไขได้ วิธีเดียวก็คือการลบ node เดิมแล้วสร้างใหม่ซะ ดังนั้น ถ้า node ไม่ตรงกัน ก็สร้างจากอันไหมได้เลย ไม่ต้องไปเปรียบเทียบต่อ
+
+สังเกตที่ return, ถ้าเรา return ค่าออกไปจาก Function บรรทัดต่อไปก็จะไม่ทำงาน ดังนั้นเราเลยสามารถที่จะหยุดให้ไปเปรียบเทียบกับอันอื่นได้
+
+```javascript
+let diff = (current, old) => {
+    if (current.nodeName !== old.nodeName) return current
+
+    // ไม่ทำงานถ้าเงื่อนไขด้านบนเป็นจริง
+    let attributes = {}
+
+    if (typeof current.attributes === typeof old)
+        attributes = compareAttributes(
+            current.attributes,
+            old
+        )
+    else
+        attributes = current.attributes
+
+    return {
+        nodeName: false
+        attributes
+    }
+```
+
+## เปรียบเทียบ childNodes
+
+แน่นอนว่า childNodes ถูกเก็บเป็น array และเราก็ไม่รู้ด้วยว่ามันจะถูกเก็บไว้กี่ชั้น ดังนั้นทางที่ดีที่สุด ก็คือทำให้ diff() เป็น Recursive ซะ จะได้สามารถใช้งานต่อไปได้เรื่อยๆ จนกว่าจะครบทุก Node
+
+โดยที่ childNodes ทั้งหมดหน้าตาเหมือนกับ Node ที่เรากำลังเปรียบเทียบอยู่ในตอนนี้เลยสามารถเขียนเป็น Recursive ได้
+
+โดยเราเริ่มจากการกำหนดจำนวนครั้ง for loop ที่ต้องใช้โดยอิงจาก จำนวน childNodes ก่อน
+
+```javascript
+current.childNodes.forEach((child, index) => {
+    // Loop ตามจำนวนครั้งของจำนวน childNodes ทั้งหมด
+})
+```
+
+สิ่งที่เราต้องเปรียบเทียบหลักๆ ก็คือ:
+
+-   ประเภทของ child บางครั้งอาจจะเป็น string ก็ได้
+-   Attributes ที่ต่างกันของ child แต่ละตัว โดยเทียบค่าจาก Reference ที่มี
+-   ถ้าค่าทุกอย่างเหมือนกันก็ส่งกลับมาเป็น false
+-   ถ้าค่าต่างกันจะได้กลับมาเป็น object ที่ diffed แล้ว โดยใช้ diff() เป็น Recursive
+
+ดังนั้นเริ่มจากการเปรียบก่อนว่า child เป็น string หรือเปล่า และเช็คว่าถ้าเป็นก็ให้เทียบกับ child ของ DOM จริงได้เลย ถ้าต่างก็เขียนไปเลยว่าต่าง
+
+```javascript
+current.childNodes.forEach((child, index) => {
+    // Loop ตามจำนวนครั้งของจำนวน childNodes ทั้งหมด
+    if (
+        typeof child === 'string' &&
+        child !== old.childNodes[index].textContent
+    )
+        return (childNodes[index] = child)
+})
+```
+
+จากนั้นก็เทียบระหว่างประเภทของทั้งสองว่าเหมือนกันหรือเปล่า? ถ้าไม่เหมือนก็เขียนทับไปได้เลย
+
+```javascript
+let childNodes = Array.apply(false, new Array(current.childNodes.length)).map(
+    () => false
+) // สร้าง array เพื่อเก็บค่าของ childNodes
+
+current.childNodes.forEach((child, index) => {
+    if (
+        typeof child === 'string' &&
+        child !== old.childNodes[index].textContent
+    )
+        return (childNodes[index] = child)
+
+    if (typeof child !== 'string' || typeof old.childNodes !== 'object')
+        return (childNodes[index] = child)
+})
+```
+
+จากนั้นก็ใช้ประโยชน์จาก Resursion เอามาเทียบไปเรื่อยๆ จนกว่าจะครบค่อยส่งออกมากเป็น Objectๆ ขนาดใหญ่อันเดียวที่รวมแค่ค่าที่ต่างกัน
+
+```javascript
+current.childNodes.forEach((child, index) => {
+    if (
+        typeof child === 'string' &&
+        child !== old.childNodes[index].textContent
+    )
+        return (childNodes[index] = child)
+
+    if (typeof child !== 'string' || typeof old.childNodes !== 'object')
+        return (childNodes[index] = child)
+
+    let diffedNode = diff(child, old.childNodes[index])
+
+    if (
+        !diffedNode.nodeName &&
+        !diffedNode.attributes &&
+        !diffedNode.childNodes
+    )
+        return
+    else return (childNodes[index] = diffedNode)
+})
+```
+
+ถ้าค่าที่ถูกส่งกลับออกมาเป็น array ต่อให้เป็น false ทั้งหมด ก็จะได้ค่าเป็น true อยู่ดี ดังนั้นเราเลยใช้ filter เพื่อปรับว่าถ้าค่าทั้งหมดใน arary เป็น false ก็เขียนเป็น false ไปได้เลย
+
+```javascript
+if (!childNodes.filter((child) => child !== false).length) childNodes = false
+```
+
+และก็ดักตอนออกไว้อีกขึ้นนึงในกรณีที่มันดันเป็น array ว่าง จากการที่ไม่มี child เลย ก็ทำให้เป็น false ไปได้เลย
+
+```javascript
+return {
+    nodeName: false,
+    attributes: keys(attributes).length ? attributes : false,
+    childNodes: keys(childNodes).length ? childNodes : false
+}
+```
+
+ดังนั้น diff() ของเราตอนนี้ก็จะมีหน้าตาประมาณนี้
+
+```javascript
+const diff = (current, old) => {
+    if (current.nodeName !== old.nodeName) return current
+
+    let attributes = {},
+        childNodes = Array.apply(
+            false,
+            new Array(current.childNodes.length)
+        ).map(() => false)
+
+    if (typeof current.attributes === typeof old)
+        attributes = compareAttributes(current.attributes, old)
+    else attributes = current.attributes
+
+    current.childNodes.forEach((child, index) => {
+        if (
+            typeof child === 'string' &&
+            child !== old.childNodes[index].textContent
+        )
+            return (childNodes[index] = child)
+
+        if (typeof child !== 'string' || typeof old.childNodes !== 'object')
+            return (childNodes[index] = child)
+
+        let diffedNode = diff(child, old.childNodes[index])
+
+        if (
+            !diffedNode.nodeName &&
+            !diffedNode.attributes &&
+            !diffedNode.childNodes
+        )
+            return
+        else return (childNodes[index] = diffedNode)
+    })
+
+    if (!childNodes.filter((child) => child !== false).length)
+        childNodes = false
+
+    return {
+        nodeName: false,
+        attributes: keys(attributes).length ? attributes : false,
+        childNodes: keys(childNodes).length ? childNodes : false
+    }
+}
+```
+
+ซึ่งสามารถเอามาเช็ค Object จาก createElement มาเทียบกันได้แล้ว และ Object จาก DOM จริงมาใช้ ก็จะได้ค่าออกมาเป็น object ที่เก็บเฉพาะค่าที่ต่างเท่านั้นด้วย ซึ่งที่เขียนมาเพื่อลดความซับซ้อนจึงได้ถูกออกแบบให้ใช้ได้กับ DOM จริงเท่านั้น ดังนั้นถ้าเอา createElement 2 อันมาเทียบกัน ก็ใช้ได้แต่อาจจะไม่ถูกต้องตรงการเทียบ textNode
+
+```javascript
+diff(
+    createElement(
+        'section',
+        { class: 'container' },
+        createElement(
+            'h1',
+            {
+                style: {
+                    color: 'blue'
+                }
+            },
+            'Hello World'
+        )
+    ),
+    createElement(
+        'section',
+        { class: 'container' },
+        createElement(
+            'h1',
+            {
+                style: {
+                    color: 'blue'
+                }
+            },
+            'Hello Virtual DOM!'
+        )
+    )
+)
+```
+
+ก็จะได้ Object แบบนี้กลับมา
+
+```javascript
+{
+    nodeName: false,
+    attributes: false,
+    childNodes: [
+        {
+            nodeName: false,
+            attributes: false,
+            childNodes: [
+                "Hello World"
+            ]
+        }
+    ]
+}
+```
+
+โดยส่วนที่เป็น false ก็คือเราจะละไว้ไม่ต้อง Update (เพราะ false เปรียบเทียบง่ายกว่า null)
+
+## Recap
+
+ในตอนนี้เรามาถึงครึ่งทางแล้ว โดยเรารู้หลักการการทำงานของ Virtual DOM ของ React 0.x โดยคร่าวๆ และก็ได้สร้าง createElement กับ Function สำหรับการ diff หาค่าที่แตกต่างจาก object ของ createElement แล้วด้วย
+
+ตอนนี้ก็พักกินน้ำแล้วออกไปเดินกันก่อนแล้วค่อยมาอ่านว่าเราจะสร้าง function render และ apply เฉพาะส่วนกันยังไงในบทต่อไปกันดีกว่า~
+
+![581x544 | Happy](vdom-creation/akari-chan.png)

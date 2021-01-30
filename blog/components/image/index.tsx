@@ -13,8 +13,18 @@ const MarkdownImage: MarkdownImageComponent = (image) => {
     let [width, height] = dimension.split('x')
 
     return (
-        <figure>
-            <Image src={src} alt={altMessage} width={width} height={height} />
+        <figure
+            className={`${
+                src.endsWith('.png') || src.endsWith('.gif') ? 'png' : ''
+            }`}
+        >
+            <Image
+                src={`/content/${src}`}
+                alt={altMessage}
+                width={width}
+                height={height}
+                layout="responsive"
+            />
         </figure>
     )
 }

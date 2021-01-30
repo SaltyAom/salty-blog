@@ -1,6 +1,8 @@
 /* eslint-disable global-require */
 import { useCallback, useState, FormEvent, useRef, useEffect } from 'react'
 
+import NextImage from 'next/image'
+
 import { Metadata } from '@contents'
 
 import { SearchLayout } from '@layouts'
@@ -47,13 +49,30 @@ const Search = () => {
     if (!searchResult.length)
         return (
             <SearchLayout onSearch={onSearch}>
-                <h1 className="text-gray-500 mx-2 font-medium">Not Found</h1>
+                <a
+                    className="block mx-auto my-4"
+                    target="_blank"
+                    href="https://walfiegif.files.wordpress.com"
+                    rel="noreferrer noreopener"
+                >
+                    <img
+                        src="https://walfiegif.files.wordpress.com/2020/12/out-transparent-23.gif?w=371&h=458"
+                        alt="fbk"
+                        className="w-full object-contain"
+                        style={{
+                            maxWidth: 300
+                        }}
+                    />
+                </a>
+                <h1 className="text-gray-500 mx-auto px-2 text-3xl font-medium">
+                    Not Found
+                </h1>
             </SearchLayout>
         )
 
     return (
         <SearchLayout onSearch={onSearch}>
-            <h1 className="text-gray-500 dark:text-gray-400 mx-2 font-medium">
+            <h1 className="text-gray-500 dark:text-gray-400 mx-2 my-0 font-medium">
                 Found {searchResult.length} post
             </h1>
             {searchResult.map((content) => (
