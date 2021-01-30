@@ -1,5 +1,8 @@
 import { useEffect } from 'react'
 
+import { StoreContext } from 'storeon/react'
+import store from '@models'
+
 import { AppProps } from 'next/app'
 
 import { AppLayout } from '@layouts'
@@ -15,9 +18,11 @@ const App = ({ Component, pageProps }: AppProps) => {
     }, [])
 
     return (
-        <AppLayout>
-            <Component {...pageProps} />
-        </AppLayout>
+        <StoreContext.Provider value={store}>
+            <AppLayout>
+                <Component {...pageProps} />
+            </AppLayout>
+        </StoreContext.Provider>
     )
 }
 

@@ -1,19 +1,17 @@
-// * Copy from: https://medium.com/get-it-working/get-prismjs-working-in-react-a6d989e59290
 import { useEffect } from 'react'
 
-import Prism from 'prismjs'
-import 'prismjs/components/prism-typescript'
+import { useStoreon } from 'storeon/react'
 
 import { MarkdownCodeComponent } from './types'
 
-import './prism.css'
-
 const Code: MarkdownCodeComponent = ({ children, className = '' }) => {
-    useEffect(() => {
-        Prism.highlightAll()
+    let { dispatch } = useStoreon()
+
+    useEffect(() =>{ 
+        dispatch('syntax/highlight')
     }, [])
 
-    return <code className={className.trim()}>{children}</code>
+    return <code className={className}>{children}</code>
 }
 
 export default Code

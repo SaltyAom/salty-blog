@@ -11,6 +11,11 @@ const saltyAom: Author = {
             social: 'twitter',
             user: '@saltyAom',
             link: 'https://twitter.com/saltyAom'
+        },
+        {
+            social: 'github',
+            user: 'SaltyAom',
+            link: 'https://github.com/SaltyAom'
         }
     ]
 }
