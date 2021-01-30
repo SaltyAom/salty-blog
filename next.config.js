@@ -8,8 +8,6 @@ const withPreact = require('next-plugin-preact')
 const withPlugins = require('next-compose-plugins')
 const withStyles = require('@webdeb/next-styles')
 
-const noModulePlugin = require('webpack-module-nomodule-plugin')
-
 module.exports = withPlugins(
     [
         [withPreact],
