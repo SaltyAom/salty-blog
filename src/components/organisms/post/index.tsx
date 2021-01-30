@@ -18,17 +18,19 @@ export const Post: FunctionComponent<Metadata> = ({
     time: { created }
 }) => (
     <NextLink href={`/content/${slug}`}>
-        <a role="article" className="mt-4 mb-8 no-underline">
-            <Image
-                className="mb-6 mx-2"
-                src={`/content/${slug}/${src}`}
-                width={width}
-                height={height}
-            />
-            <h3 className="ml-2 my-2 text-3xl font-medium text-gray-700 dark:text-gray-200">
-                {title}
-            </h3>
-            <WrittenBy author={author} created={created} showDate />
+        <a className="mt-4 mb-8 no-underline">
+            <article>
+                <Image
+                    className="mb-6 mx-2"
+                    src={`/content/${slug}/${src}`}
+                    width={width}
+                    height={height}
+                />
+                <h3 className="ml-2 my-2 text-3xl font-medium text-gray-700 dark:text-gray-200">
+                    {title}
+                </h3>
+                <WrittenBy author={author} created={created} showDate />
+            </article>
         </a>
     </NextLink>
 )

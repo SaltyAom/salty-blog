@@ -14,7 +14,7 @@ const EditorHeader: EditorLayoutComponent = ({
     socials
 }) => (
     <header className="flex flex-col items-center mt-8 sm:mt-12 mb-4 mx-auto px-4 pt-8">
-        <div className={`${styles.profile} rounded-full overflow-hidden`}>
+        <figure className={`${styles.profile} bg-preload dark:bg-preload-dark rounded-full overflow-hidden`}>
             <NextImage
                 src={`/editor/${slug}/${image}`}
                 width={172}
@@ -22,7 +22,7 @@ const EditorHeader: EditorLayoutComponent = ({
                 objectFit="cover"
                 quality={100}
             />
-        </div>
+        </figure>
         <h1 className="mt-8 mb-2 text-4xl text-gray-700 dark:text-gray-100 font-semibold">
             {name}
         </h1>
