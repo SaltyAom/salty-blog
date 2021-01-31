@@ -4,6 +4,7 @@ import { Metadata } from '@blog/contents'
 
 import sizeOf from 'image-size'
 
+import fs from 'fs'
 import { resolve } from 'path'
 
 interface RawMetadata extends Omit<Metadata, 'image' | 'time'> {
@@ -21,7 +22,11 @@ export const createContent = (blog: RawMetadata): Metadata => {
         : createdTime
 
     let { width, height } = sizeOf(
-        resolve(`./public/content/${blog.slug}/${blog.image}`)
+        fs.existsSync(
+            `./public/content/${blog.slug}/${blog.image}`
+        )
+            ? `./public/content/${blog.slug}/${blog.image}`
+            : `./content/${blog.slug}/${blog.image}`
     )
 
     if (typeof width === 'undefined' || typeof height === 'undefined')
