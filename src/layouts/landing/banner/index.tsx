@@ -22,13 +22,13 @@ const Banner = () => (
                         ด๋อย
                     </mark>
                 </h1>
-                <p className="my-4 text-xl font-light text-gray-400 dark:text-gray-400 leading-8 whitespace-pre-wrap">
+                <p className="my-4 text-xl font-light text-gray-400 dark:text-gray-300 leading-8 whitespace-pre-wrap">
                     สรุปเนื้อหาเรื่อง Programming ไว้อ่านเอง
                     <br />
                     แต่ทำให้อ่านง่ายเผื่อตัวเองลืม
                 </p>
                 <ul
-                    className={`${styles['banner-list']} my-0 pl-1 list-none font-light text-xl text-gray-400 dark:text-gray-400 leading-8`}
+                    className={`${styles['banner-list']} my-0 pl-1 list-none font-light text-xl text-gray-300 dark:text-gray-400 leading-8`}
                 >
                     <li>Web Development</li>
                     <li>React, TypeScript, Flutter</li>

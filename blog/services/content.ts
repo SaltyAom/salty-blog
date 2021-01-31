@@ -18,7 +18,7 @@ export const createContent = (blog: RawMetadata): Metadata => {
         ? time(blog.time.modified)
         : createdTime
 
-    let { width, height } = sizeOf(`public/content/${blog.slug}/${blog.image}`)
+    let { width, height } = sizeOf(`${process.env.root}/public/content/${blog.slug}/${blog.image}`)
 
     if (typeof width === 'undefined' || typeof height === 'undefined')
         throw new Error(
