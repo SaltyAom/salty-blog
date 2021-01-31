@@ -1,0 +1,1 @@
+export const web = "https://blog.saltyaom.com"

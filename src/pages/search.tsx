@@ -1,7 +1,5 @@
 /* eslint-disable global-require */
-import { useCallback, useState, FormEvent, useRef, useEffect } from 'react'
-
-import NextImage from 'next/image'
+import { useCallback, useState, useRef, useEffect } from 'react'
 
 import { Metadata } from '@contents'
 
@@ -14,8 +12,25 @@ import IFuse from 'fuse.js'
 
 const Search = () => {
     let [searchResult, updateSearchResult] = useState<Metadata[] | null>(null)
+    let deferSearch = useRef('')
 
     let fuse = useRef<IFuse<Metadata>>()
+
+    let onSearch = useCallback((searchKey: string) => {
+        if (!fuse.current) {
+            deferSearch.current = searchKey
+
+            return
+        }
+
+        if (deferSearch.current) deferSearch.current = ''
+
+        let result = fuse.current?.search(searchKey).map(({ item }) => item)
+
+        window.history.pushState('', '', `/search?q=${encodeURI(searchKey)}`)
+
+        updateSearchResult(result)
+    }, [])
 
     useEffect(() => {
         let createEngine = async () => {
@@ -27,24 +42,11 @@ const Search = () => {
             })
 
             fuse.current = engine
+
+            if (deferSearch.current) onSearch(deferSearch.current)
         }
 
         createEngine()
-    }, [])
-
-    let onSearch = useCallback((event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        
-        let searchBox = event.currentTarget[0] as HTMLInputElement
-        let { value: searchKey } = searchBox
-
-        if (!fuse.current) return
-
-        let result = fuse.current?.search(searchKey).map(({ item }) => item)
-
-        event.currentTarget.blur()
-
-        updateSearchResult(result)
     }, [])
 
     if (!searchResult) return <SearchLayout onSearch={onSearch} />

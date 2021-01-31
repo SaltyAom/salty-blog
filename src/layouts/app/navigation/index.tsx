@@ -7,7 +7,7 @@ const Navigation = () => (
         className={`${styles.navigation} fixed z-50 top-0 left-0 w-full bg-white dark:bg-preload-dark`}
     >
         <nav
-            className={`${styles['navigation-bar']} flex flex-row justify-between items-center mx-auto px-2`}
+            className={`${styles['navigation-bar']} flex flex-row justify-between items-center mx-auto px-4`}
         >
             <Link href="/" className="text-xl px-2">
                 Salty Blog
