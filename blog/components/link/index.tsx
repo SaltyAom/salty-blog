@@ -9,7 +9,7 @@ const MarkdownLink: MarkdownLinkComponent = (link) => {
 
     if (href.includes('//'))
         return (
-            <a href={href} rel="noreferrer noreopener">
+            <a className={styles.a} href={href} rel="noreferrer noreopener">
                 {children}
             </a>
         )
