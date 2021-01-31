@@ -87,7 +87,8 @@
         "noEmit": true,
         "moduleResolution": "node",
         "resolveJsonModule": true,
-        "downlevelIteration": true
+        "downlevelIteration": true,
+        "keyofStringsOnly": true
     },
     "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
     "exclude": ["node_modules"]

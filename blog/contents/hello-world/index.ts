@@ -1,30 +1,15 @@
+import { createContent } from '@blog/services'
 import { saltyAom } from '@authors'
 
-import { time } from '@blog/services'
-
-import { Metadata } from '../types'
-
-const created = time('2021-1-29 16:55')
-const modified = time('2021-1-29 16:55')
-
-const blog: Metadata = {
+const blog = createContent({
     title: 'Hello World',
     slug: 'hello-world',
     summary: 'This is summary',
     author: saltyAom,
-    image: {
-        src: 'opened.jpg',
-        dimension: {
-            width: 3920,
-            height: 2126
-        }
-    },
+    image: 'opened.jpg',
     time: {
-        created: created.format('D MMM YYYY'),
-        createdWithTime: created.toString(),
-        modified: modified.format('D MMM YYYY'),
-        modifiedWithTime: modified.toString()
+        created: '2021-1-29 16:55'
     }
-}
+})
 
 export default blog
