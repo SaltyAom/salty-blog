@@ -2,6 +2,8 @@ import dynamic from 'next/dynamic'
 
 import { MarkdownImageComponent } from './types'
 
+import styles from '../component.module.sass'
+
 const Image = dynamic(() => import('next/image'))
 
 const MarkdownImage: MarkdownImageComponent = (image) => {
@@ -12,12 +14,10 @@ const MarkdownImage: MarkdownImageComponent = (image) => {
     let [dimension, altMessage] = alt.split(' | ')
     let [width, height] = dimension.split('x')
 
+    let isPng = src.endsWith('.png') || src.endsWith('.gif') ? styles.png : ''
+
     return (
-        <figure
-            className={`${
-                src.endsWith('.png') || src.endsWith('.gif') ? 'png' : ''
-            }`}
-        >
+        <figure className={`${isPng} ${styles.figure}`}>
             <Image
                 src={`/content/${src}`}
                 alt={altMessage}

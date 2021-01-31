@@ -2,6 +2,8 @@ import Link from 'next/link'
 
 import { MarkdownLinkComponent } from './types'
 
+import styles from '../component.module.sass'
+
 const MarkdownLink: MarkdownLinkComponent = (link) => {
     let { href, children } = link
 
@@ -14,7 +16,7 @@ const MarkdownLink: MarkdownLinkComponent = (link) => {
 
     return (
         <Link href={href}>
-            <a>{children}</a>
+            <a className={styles.a}>{children}</a>
         </Link>
     )
 }

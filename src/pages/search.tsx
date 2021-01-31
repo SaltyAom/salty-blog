@@ -14,6 +14,7 @@ import IFuse from 'fuse.js'
 
 const Search = () => {
     let [searchResult, updateSearchResult] = useState<Metadata[] | null>(null)
+
     let fuse = useRef<IFuse<Metadata>>()
 
     useEffect(() => {
@@ -33,13 +34,15 @@ const Search = () => {
 
     let onSearch = useCallback((event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-
+        
         let searchBox = event.currentTarget[0] as HTMLInputElement
         let { value: searchKey } = searchBox
 
         if (!fuse.current) return
 
         let result = fuse.current?.search(searchKey).map(({ item }) => item)
+
+        event.currentTarget.blur()
 
         updateSearchResult(result)
     }, [])

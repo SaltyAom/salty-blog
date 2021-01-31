@@ -8,14 +8,13 @@ const WrittenBy: WrittenByComponent = ({
     author,
     showDate = false
 }) => (
-    <div
-        role="paragraph"
+    <section
         className="inline text-sm sm:text-base text-gray-400 dark:text-gray-400 font-medium my-4"
     >
         {prefix}
         <UserBadge {...author} />
         {showDate && `On ${created}`}
-    </div>
+    </section>
 )
 
 export default WrittenBy

@@ -1,17 +1,34 @@
-import { useEffect } from 'react'
-
-import { useStoreon } from 'storeon/react'
+/* eslint-disable global-require */
+import { useEffect, useMemo, useRef } from 'react'
 
 import { MarkdownCodeComponent } from './types'
 
-const Code: MarkdownCodeComponent = ({ children, className = '' }) => {
-    let { dispatch } = useStoreon()
+import styles from '../component.module.sass'
 
-    useEffect(() =>{ 
-        dispatch('syntax/highlight')
+const Code: MarkdownCodeComponent = ({ children, className = '' }) => {
+    let code = useRef<HTMLElement>(null)
+
+    let syntaxHighlight = useMemo(
+        () => async (element: HTMLElement) => {
+            let Prism = await require('prismjs')
+            await require('prismjs/components/prism-typescript')
+
+            require('@styles/prism.css')
+
+            Prism.highlightElement(element)
+        },
+        []
+    )
+
+    useEffect(() => {
+        if (code.current) syntaxHighlight(code.current)
     }, [])
 
-    return <code className={className}>{children}</code>
+    return (
+        <code ref={code} className={`${styles.code} ${className}`}>
+            {children}
+        </code>
+    )
 }
 
 export default Code

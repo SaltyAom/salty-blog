@@ -1,8 +1,6 @@
 import fs from 'fs'
 import { resolve } from 'path'
 
-import { StoreProvider } from '@models'
-
 import components from '@blog/components'
 
 import renderToString from 'next-mdx-remote/render-to-string'
@@ -23,10 +21,6 @@ export const getContent = async (title: string) => {
 
     const Content = await renderToString(content, {
         components,
-        provider: {
-            component: StoreProvider,
-            props: {}
-        },
         mdxOptions: {
             remarkPlugins: [],
             rehypePlugins: []

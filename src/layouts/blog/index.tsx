@@ -3,7 +3,7 @@ import OpenGraph from './opengraph'
 
 import { BlogLayoutComponent } from './types'
 
-import './blog.sass'
+import styles from './blog.module.sass'
 
 const BlogLayout: BlogLayoutComponent = (props) => {
     let { children, ...author } = props
@@ -11,7 +11,9 @@ const BlogLayout: BlogLayoutComponent = (props) => {
     return (
         <>
             <OpenGraph {...props} />
-            <main id="blog-layout" className="w-full py-4 px-6 mt-10 mb-4 sm:my-8 mx-auto">
+            <main
+                className={`${styles['blog-layout']} w-full py-4 px-6 mt-10 mb-4 sm:my-8 mx-auto`}
+            >
                 <BlogHeader {...author} />
                 {children}
             </main>

@@ -2,8 +2,6 @@ import { FunctionComponent } from 'react'
 
 import { GetStaticPaths, GetStaticProps } from 'next'
 
-import { StoreProvider } from '@models'
-
 import { BlogLayout } from '@layouts'
 
 import components from '@blog/components'
@@ -24,11 +22,7 @@ const BlogPage: FunctionComponent<Blog> = ({ content }) => {
     let { Content, ...metadata } = content
 
     let ContentComponent = hydrate(Content, {
-        components,
-        provider: {
-            component: StoreProvider,
-            props: {}
-        }
+        components
     })
 
     return <BlogLayout {...metadata}>{ContentComponent}</BlogLayout>
