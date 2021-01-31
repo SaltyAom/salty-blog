@@ -4,6 +4,8 @@ import { Metadata } from '@blog/contents'
 
 import sizeOf from 'image-size'
 
+import { resolve } from 'path'
+
 interface RawMetadata extends Omit<Metadata, 'image' | 'time'> {
     image: string
     time: {
@@ -18,7 +20,9 @@ export const createContent = (blog: RawMetadata): Metadata => {
         ? time(blog.time.modified)
         : createdTime
 
-    let { width, height } = sizeOf(`${process.env.root}/public/content/${blog.slug}/${blog.image}`)
+    let { width, height } = sizeOf(
+        resolve(`./public/content/${blog.slug}/${blog.image}`)
+    )
 
     if (typeof width === 'undefined' || typeof height === 'undefined')
         throw new Error(
