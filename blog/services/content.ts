@@ -23,10 +23,10 @@ export const createContent = (blog: RawMetadata): Metadata => {
 
     let { width, height } = sizeOf(
         fs.existsSync(
-            `./public/content/${blog.slug}/${blog.image}`
+            resolve(`./public/content/${blog.slug}/${blog.image}`)
         )
-            ? `./public/content/${blog.slug}/${blog.image}`
-            : `./content/${blog.slug}/${blog.image}`
+            ? resolve(`./public/content/${blog.slug}/${blog.image}`)
+            : resolve(`./content/${blog.slug}/${blog.image}`)
     )
 
     if (typeof width === 'undefined' || typeof height === 'undefined')
