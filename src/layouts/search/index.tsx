@@ -89,7 +89,7 @@ const SearchLayout: SearchLayoutComponent = ({ children, onSearch }) => {
                                 />
                             </label>
                             <button
-                                className={`${styles['search-submit']} justify-center items-center appearance-none text-2xl text-gray-400 pt-2 hover:text-blue-400 transition-colors bg-transparent border-0 outline-none cursor-pointer`}
+                                className={`${styles['search-submit']} justify-center items-center appearance-none text-2xl text-gray-400 pt-2 hover:text-blue-400 focus:text-blue-400 transition-colors bg-transparent border-0 outline-none cursor-pointer`}
                                 type="submit"
                             >
                                 <SearchIcon size="24" />

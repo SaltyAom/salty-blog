@@ -6,7 +6,13 @@ const blog = createContent({
     slug: 'hello-world',
     summary: 'This is summary',
     author: saltyAom,
-    image: 'opened.jpg',
+    image: {
+        src: 'opened.jpg',
+        dimension: {
+            width: 3920,
+            height: 2126
+        }
+    },
     time: {
         created: '2021-1-29 16:55'
     }
