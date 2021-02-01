@@ -68,9 +68,6 @@ module.exports = withPlugins(
             path: '/_next/image',
             loader: 'default'
         },
-        serverRuntimeConfig: {
-            PROJECT_ROOT: __dirname
-        },
         webpack(config, options) {
             config.resolve.alias = {
                 ...config.resolve.alias,

@@ -6,9 +6,7 @@ import getConfig from 'next/config'
 
 import sizeOf from 'image-size'
 
-import { join } from 'path'
-
-const { serverRuntimeConfig } = getConfig()
+import { resolve } from 'path'
 
 interface RawMetadata extends Omit<Metadata, 'image' | 'time'> {
     image: string
@@ -25,8 +23,7 @@ export const createContent = (blog: RawMetadata): Metadata => {
         : createdTime
 
     let { width, height } = sizeOf(
-        join(
-            serverRuntimeConfig.PROJECT_ROOT,
+        resolve(
             `./public/content/${blog.slug}/${blog.image}`
         )
     )

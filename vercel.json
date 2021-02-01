@@ -1,0 +1,21 @@
+{
+    "builds": [
+        {
+            "src": "next.config.js",
+            "use": "@now/next"
+        },
+        {
+            "src": "lambdas/**/*.ts",
+            "use": "@now/node",
+            "config": {
+                "includeFiles": ["content/**"]
+            }
+        }
+    ],
+    "routes": [
+        {
+            "src": "/lambdas/(.+)",
+            "dest": "/lambdas/$1.ts"
+        }
+    ]
+}
