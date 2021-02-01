@@ -23,7 +23,7 @@ const BlogLayout: BlogLayoutComponent = ({
             navigator.share({
                 title: metadata.title,
                 // eslint-disable-next-line no-restricted-globals
-                url: `${location.host}/content/${metadata.slug}`
+                url: location.href
             })
         }
     }

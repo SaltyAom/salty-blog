@@ -1,0 +1,157 @@
+ด้วยความที่ React.js มีประสิทธิภาพที่ดีมาก จากการใช้ Virtual DOM, Eco System ที่กว้างๆ มากๆ พัฒนาขึ้นโดย Facebook และใช้ในบริษัทใหญ่ๆ หลายที่อย่าง Netflix, Dropbox และ Facebook เลยไม่แปลกเลยที่จะเป็นที่นิยมมาก
+
+แต่ว่าเว็บหลายๆ ที่มักจะมีปัญหาอย่างนึง:
+
+# โหลดไม่เร็วเท่า library อื่น
+ใช้ครับ, การโหลดหน้าเว็บที่ใช้ React ไม่เร็ว เท่าเว็บที่ใช้ library อย่าง Vue, Svelte ที่มีขนาดเล็กกว่า
+
+![1280x630 | JavaScript Framework](preact-3kb-of-react/javascript-framework.png)
+<Image src="/assets/content/preact-3kb-of-react/javascript-framework.png" alt="JavaScript Framework" />
+
+แล้วด้วยความที่ใช้ Virtual DOM การ render ครั้งแรกก็ต้องเปรียบเทียบ DOM แล้วก็ render ขึ้นมาได้ โดยเฉพาะถามี element เยอะๆ จะ render ช้าลงไปอีก, ปัญหาตรงนี้ เจอกับ mid-low end mobile (ลอง Audit ด้วย x4 หรือ x6 CPU slowdown ดูจะเห็นได้ใช้)
+
+เราอาจจะ optimize ตรงจุดอื่นๆ แล้ว ทั้งลดขนาดภาพ, minify หรือ pre-render แล้ว แต่ก็ยังอยากให้เร็วกว่านี้อีก จะทำยังไงดี?
+
+## 3 วินาที คือเวลาที่ 53% ของผู้ใช้จะรอได้นานที่สุด
+
+Google developer บอกว่า คนที่เข้าเว็บมา หวังไว้ว่า เว็บที่เข้ามา จะต้องโหลดเร็ว มากพอที่ยังคงความสนใจไว้ได้อยู่ ซึ่ง 3 วินาทีตรงนี้ คือเวลาที่ผู้ใช้ 53% คาดหวังจากการเข้าเว็บ ซึ่งถ้าเกิน พวกเขามักจะออกจากเว็บในทันที
+
+
+### React เป็น library ตัวนึงที่มีขนาดใหญ่อันนึงเลย มีขนาดอยู่ประมาณ 125.1KB
+
+125.1 kB นี่แค่สำหรับ library สำหรับ React และ React DOM นะ, หลายคนอาจจะคิดว่า ก็ไม่ได้ใหญ่มาก พอที่จะ Optimize ให้เร็วได้อยู่อาจจะ gzip ก็ลดหรือแค่ 43.9KB ละ
+
+![1280x630 | React has big ecosystem](preact-3kb-of-react/big-ecosystem.png)
+
+แต่ในความเป็นจริง, developer ที่ใช้ React ไม่ได้ใช้แค่ React อย่างเดียว, redux, react-router, react-helmet, etc. แล้วก็ไฟล์ JavaScript, CSS ที่เขียนขึ้นเอง แล้วไหนจะรูปภาพที่ใช้ load อีก, ไปๆ มาๆ บางทีเผลอๆ แค่โหลดเข้ามายัง 250KB
+
+ซึ่งคนส่วนใหญ่ไม่ได้มี internet ทีเร็วขนาดนั้น โดนเฉพาะ พวกใช้ส่วนมากนิยมใช้ โทรศัพท์ กันมากกว่าในการเข้าเว็บ ซึ่งมีทั้ง 4G และ 3G, บางคนเน็ตหมดความเร็วก็ลดไปหรือแค่ ไม่กี่ 10kB/sec ก็มีให้เห็นเยอะ
+
+
+# แล้วทำไมต้องทำให้เร็ว?
+ลองคิดถึง traffic เว็บที่เราใช้กันทุกวันนี้ดู สมมติว่าปกติมีคนเข้าเว็บ 100,000 คน/วัน ถ้าหากหายไป 53% ก็จะเหลือแค่ 47,000 คน/วัน ซึ่งไม่น้อยเลย
+
+โดยเฉพาะเว็บที่มีโฆษณา (ซึ่งได้เงินมาจากการที่ผู้ใช้เข้ามาในเว็บ) จะเสียผลประโยชน์มาก ซึ่งรายได้หายไปเกินครึ่งเลย ถ้าเสีย traffic ตรงนี้ไป
+
+## ความเร็วเว็บ มีผลต่อการจัด ranking บน Google
+เว็บที่ไม่เร็วพอ จะสูญเสีย traffic ในการใช้งาน โดยเฉพาะ Google จะจัดอันดับ Ranking จากความเร็วเว็บด้วย ซึ่ง 3 วินาทีคือตัวเลขที่ Google พอใจ, ง่ายๆ ก็คือ ยิ่งเว็บเร็วเท่าไหร่ ก็ยิ่งมีผลต่อการจัด ranking บน Google
+
+เราสามารถวัดความเร็วเว็บผ่านเครื่องมือของ Google ที่ชื่อว่า lighthouse ได้
+
+![1280x720 | Google's Lighthouse](preact-3kb-of-react/lighthouse.png)
+
+# ขนาดของ React ใหญ่เกินไป
+![1280x630 | React is too large](preact-3kb-of-react/too-large.png)
+
+ความคิดเห็นส่วนตัวคือ ไม่ว่าเราจะ optimize ยังไง ก็อาจพอช่วยให้เว็บเร็วขึ้นได้ก็จริง แต่ปฏิเสธไม่ได้เลยว่า React มีขนาดที่ใหญ่มาก (125KB) ซึ่งมีผลต่อการโหลดหน้าเว็บในครั้งแรกแน่ๆ
+
+ถ้า React ยังใหญ่ขนาดนี้อยู่ งั้นจะทำยังไงให้โหลดเร็วขึ้นกว่านี้อีกละ?
+
+
+# Preact, 3KB version of React
+
+## Preact เป็น library ตัวนึงที่มีแนวคิดเหมือนกับ React แต่ว่ามีขนาดอยู่ที่ 3KB (gzip)
+
+## React ที่มีขนาด 3KB
+แนวคิดก็คือ ต้องการที่จะลดขนาดของ React ให้เหลือแต่สิ่งที่จำเป็นจริงๆ เท่านั้น โดยพยายามจะทำให้ Virtual DOM มีขนาดน้อยที่สุด เท่าที่จะทำได้
+
+นอกจากนี้ Preact ยังมีวิธีใช้งานที่แทบจะเหมือนกับ React ทุกอย่าง ตั้งแต่, วิธีเขียน ยันชื่อ และการเรียกใช้ แต่ว่ามีขนาดแค่ 3KB แล้วก็ยังมี hooks ด้วย~
+
+ที่ยิ่งไปกว่านั้นคือ Preact แทบจะใช้ได้กับทุก library ที่ใช้ React, ทำให้การเปลี่ยนมาใช้ Preact กลายเป็นเรื่องง่าย และ learning curve แทบไม่มีถ้าเขียน React เป็นอยู่แล้ว (´･∀･)
+
+## Performance ที่ดีกว่า
+ใช่ครับ, Preact มี performance ที่ดีกว่า React ไม่ใช่แค่โหลดเร็วกว่า แต่ render และเปรียบเทียบได้เร็วกว่าด้วย
+
+Preact ใช้ `addEventListener` ตรงๆ จาก browser ต่างกับ React ที่สร้าง listener ขึ้นมาเอง สำหรับการเปรียบเทียบ ทำให้ลด memory ในการใช้งาน และขนาดไฟล์ลง
+
+ด้วยความที่ Preact ไม่ได้สร้าง psuedo attribute ขึ้นมาเพื่อเปรียบเทียบ แต่ใช้ชื่อ attrubute เดิมตรงๆ ทำให้ใกล้เคียงกับ DOM จริงมากกว่า และลดการใช้งานและจัดการ memory ได้ดีกว่า
+
+อย่างเช่น สำหรับ React เวลาเพิ่ม `class` จะต้องใช้ชื่อว่า `className` แต่ว่า Preact ใช้ class ตรงๆ ได้เลย
+
+```javascript
+// React
+<div className="container">
+</div>
+// Preact
+<div class="container">
+</div>
+```
+
+## Compatability
+แทบจะ library ทุกตัวที่ใช้กับ React ได้ ก็ใช้กับ Preact ได้
+
+Preact มี library ที่ชื่อว่า preact compat ในการจัดการกับ API ที่ใช้ใน React ให้ ใช้กับ Preact ได้เองได้ ด้วยการตั้ง alias preact compat แทน React และ React DOM
+
+วิธีการเปลี่ยนก็ง่ายมาก แค่เปลี่ยนจาก คำว่า React มาเป็น Preact แค่นั้นเอง~
+
+```javascript
+// As React
+import React from 'react'
+const Container = () => (
+    <div>
+        This is written in React
+    </div>
+)
+```
+
+จากนั้นก็เปลี่ยน library จาก ตรง import จาก React มาเป็น Preact
+
+```javascript
+// As Preact
+import { h } from 'preact'
+const Container = () => (
+    <div>
+        This is written in Preact
+    </div>
+)
+```
+
+h เป็นชื่อ function ที่ใช้ในการบอกว่า เราจะใช้ JSXใน file นี้
+(เดิมทีเป็น React ก็ใช้ คำว่า h เพื่อบอกว่าเป็น JSX, มาจากรากฐานของ Hyperscriptเหมือนกัน, library ตัวอื่นก็เลยทำตาม
+
+## Ecosystem ที่คล้าย React
+Preact แทบจะมี Ecosystem ที่เหมือน React เลย, โดยเฉพาะใน Preact X แทบจะใช้ ecosystem ของ React ได้ด้วยซ้ำ
+
+อยากใช้ react-router? เรามี preact-router ให้
+อยากใช้ react-redux? เรามี preact-redux ให้
+อยากใช้ react-helmet? เรามี preact-helmet ให้
+อยากใช้ portal? เรามี preact-portal ให้
+อยากใช้ jest? เรามี jest-preact-preset ให้
+อยากทำ Server Side Rendering? เรามี preact-render-to-string และ preact-ssr-prepass แทนให้
+อยากใช้ React Devtools? เราก็ใช้ได้เลย ไม่ต้องลงอะไรเพิ่มเลย♫♪
+
+เรียกได้ว่า แทบจะมีทุกอย่างให้แล้ว, แล้วที่ยิ่งกว่านั้น ใน Preact X, แค่เรียก `preact/compat` ก็ใช้ library ด้านบนได้เลย
+library ที่ยกตัวอย่างด้านบนก็ใช้ library ของ React เหมือนเดิมได้เลย (ยกเว้น SSR)
+
+```javascript
+import { h } from 'preact'
+import { connect } from 'react-redux'
+```
+
+เราใช้ library ตรงๆ แบบนี้ได้เลยนะ~ หรืออยากจะใช้ Next.js กับ Preact ก็ทำได้
+
+นอกจากนั้น Preact ยังเป็น Open source ที่มีการกด star ให้บน Github ถึง 23,000 ดวง และมีเกือบ 200,000 Weekly downloads เลยด้วย
+
+![1280x720 | Preact has 23kb star](preact-3kb-of-react/preact-23k-star)
+<Image src="/assets/content/preact-3kb-of-react/preact-23k-star.png" alt="Preact has 23k stars" />
+
+## บริษัทใหญ่ๆ ก็ใช้ Preact
+Community ของ Preact และประสิทธิภาพดีมาก แม้แต่บริษัทใหญ่ๆ ที่ใช้ Preact แทน React ก็มีอย่างเช่น
+
+* Uber
+* Pepsi
+* The Newyork Time
+* Algolia Search
+* The DEV Community
+
+ถ้าแม้แต่บริษัทยักษ์ใหญ่ยังใช้ Preact, ก็คงจะบอกได้ว่าบริษัทใหญ่ๆ ก็เชื่อใจใน Preact ระดับนึงที่เอาขึ้น Production ได้
+![1280x720 | Preact vs React on Google Firebase Youtube's channel](preact-3kb-of-react/preact-vs-react.png)
+
+แม้แต่ Firebase (Channel บน YouTube), Developer Advocate ยังมีการพูดถึงเรื่อง Performance และข้อดีของ Preact เลยว่า ทำไมถึงควรที่จะลองใช้ Preact
+
+# สรุป
+Preact, สั้นๆ ว่า React ขนาด 3KB ที่เขียนมี React, มี Virtual DOM เหมือน React, และใช้ Library ของ React ได้โดยตรง
+
+เป็นอีกหนึ่งทางเลือกทีน่าสนใจที่ React Developer ที่ควรจับตามอง และแทบจะไม่มี learning curve เลย ถ้าเขียน React กันได้อยู่แล้ว~
+
+สุดท้ายนี้ หวังว่า Preact จะเป็นอีกหนึ่งทางเลือกในการช่วยให้แก้ปัญหาที่เจอกันทุกๆ วัน ได้เป็นบ้างนะ♫♪

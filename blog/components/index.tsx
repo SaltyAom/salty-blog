@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic'
 
-import { h1, h2, h3, h4, h5, h6, p } from './text'
+import { h1, h2, h3, h4, h5, h6, p, strong } from './text'
 import MarkdownImage from './image'
 import MarkdownLink from './link'
 import MarkdownPre from './pre'
@@ -21,7 +21,8 @@ const components = {
     h6,
     p,
     ul,
-    li
+    li,
+    strong
 }
 
 export type { MarkdownLinkProps, MarkdownLinkComponent } from './link/types'

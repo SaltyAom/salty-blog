@@ -1,6 +1,6 @@
 พอพูดถึง Firebase หลายคนก็คงจะนึกถึงอะไรที่ ยากๆ แต่ความจริงแล้ว Firebase เนี่ย ทำให้ชีวิตใครหลายคนง่ายขึ้นมากๆ, เราสามารถที่จะทำ Database แบบ Realtime ได้ง่ายมาก และ ยังทำ Authentication ได้โดยที่เราไม่จำเป็นต้องเขียน Backend และ ทำ Database ขึ้นเองด้วยซ้ำ!
 
-`Google ได้สร้าง Firebase ขึ้นมาเพื่อช่วยให้ Developer ไม่ต้องมาทำ Backend เอง` แต่ย้ายมาทำที่ Frontend แทน! (เอ๊ะ? อะไรยังไง?)
+**Google ได้สร้าง Firebase ขึ้นมาเพื่อช่วยให้ Developer ไม่ต้องมาทำ Backend เอง** แต่ย้ายมาทำที่ Frontend แทน! (เอ๊ะ? อะไรยังไง?
 
 ด้วยความที่ Firebase ถูกพัฒนาขึ้นเพื่อให้เป็น BasS (Backend as Service) โดยเฉพาะ, ทำให้แค่ Request สิ่งที่อยากให้ Firebase ทำให้, Firebase ก็จะทำให้เราเองเลย~
 
@@ -76,7 +76,7 @@ Cloud Firestore เริ่มต้นใช้ได้ฟรี และไ
 
 ## เปิดใช้งาน Cloud Firestore
 
-ก่อนเริ่ม ให้ย้อนกลับเข้าไปที่ Firebase Console ก่อน เพื่อเปิด Cloud Firestore ก่อน, เหมือนกับเข้าไปบอกว่า `เราจะใช้ Feature นี้นะ ช่วยเปิดให้หน่อยสิ`
+ก่อนเริ่ม ให้ย้อนกลับเข้าไปที่ Firebase Console ก่อน เพื่อเปิด Cloud Firestore ก่อน, เหมือนกับเข้าไปบอกว่า **เราจะใช้ Feature นี้นะ ช่วยเปิดให้หน่อยสิ**
 
 ![1280x720 | Enable Firestore](introduction-to-firestore/enable-firestore.jpg)
 
@@ -111,7 +111,7 @@ yarn add firebase
 ```
 
 3. ใช้กับ TypeScript
-   เพิ่ม modules ปกติเลย แต่ให้เพิ่ม `@types/firebase` สำหรับ type support ด้วย
+   เพิ่ม modules ปกติเลย แต่ให้เพิ่ม **@types/firebase** สำหรับ type support ด้วย
 
 ```
 npm install --save-dev @types/firebase
@@ -119,7 +119,7 @@ npm install --save-dev @types/firebase
 yarn add @types/firebase
 ```
 
-พอเพิ่ม package มาแล้วก็อย่าลืม require หรือ import firebase สำหรับใช้งานใน JavaScript ด้วยนะ `(สำหรับ CDN จะมีตัวแปรชื่อ firebase ให้อยู่แล้ว)`
+พอเพิ่ม package มาแล้วก็อย่าลืม require หรือ import firebase สำหรับใช้งานใน JavaScript ด้วยนะ **(สำหรับ CDN จะมีตัวแปรชื่อ firebase ให้อยู่แล้ว)**
 
 ```javascript
 const firebase = require('firebase/app')
@@ -130,8 +130,8 @@ import firebase from 'firebase/app'
 import 'firebase/firestore'
 ```
 
-โดยที่ `firebase/app คือ core สำหรับการใช้งาน` จะดึงแค่ feature หลักมาใช้ เพื่อจะได้ตัด feature ที่ไม่ต้องการออก
-ส่วน `firebase/firestore คือดึงส่วนของ Firestore` มาใช้
+โดยที่ **firebase/app คือ core สำหรับการใช้งาน** จะดึงแค่ feature หลักมาใช้ เพื่อจะได้ตัด feature ที่ไม่ต้องการออก
+ส่วน **firebase/firestore คือดึงส่วนของ Firestore** มาใช้
 
 # มา Connect เข้า Firestore กันเถอะ
 
@@ -155,7 +155,7 @@ var config = {
 firebase.initializeApp(config)
 ```
 
-`ตัว config เอาไว้ใช้ออกว่า ต้องการจะเชื่อมไปที่ไหน` และ `firebase.initializeApp(config) คือการเอา config มาเชื่อมไปที่ Firebase`
+**ตัว config เอาไว้ใช้ออกว่า ต้องการจะเชื่อมไปที่ไหน** และ **firebase.initializeApp(config) คือการเอา config มาเชื่อมไปที่ Firebase**
 พอเชื่อมเสร็จแล้วก็สามารถใช้ Firebase ได้เลย แต่ว่า ถ้าอยากใช้ Firestore ด้วย จะต้องเรียก firestoreซะก่อนด้วย
 
 ```javascript

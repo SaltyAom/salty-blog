@@ -22,7 +22,7 @@ const Landing: FunctionComponent<Blogs> = ({ blogs }) => (
 
 export const getStaticProps: GetStaticProps<Blogs> = async () => ({
     props: {
-        blogs: metadataList
+        blogs: metadataList.reverse()
     }
 })
 
