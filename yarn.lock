@@ -6932,6 +6932,11 @@ makeerror@1.0.x:
   dependencies:
     tmpl "1.0.x"
 
+mangle-css-class-webpack-plugin@^4.0.11:
+  version "4.0.11"
+  resolved "https://registry.yarnpkg.com/mangle-css-class-webpack-plugin/-/mangle-css-class-webpack-plugin-4.0.11.tgz#1db8ac25ea61148098304caf5c5083b61f81427b"
+  integrity sha512-H8tMZcgmBS7oZacS6J9JZrBZjKRnSjwLd/O9RCvuOFcamaeVIHWYpAzYm6LMHy9cA/bwjYu0QXDOEXLo6nyCeQ==
+
 map-cache@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/map-cache/-/map-cache-0.2.2.tgz#c32abd0bd6525d9b051645bb4f26ac5dc98a0dbf"
@@ -9674,7 +9679,7 @@ sass-loader@^8.0.2:
     schema-utils "^2.6.1"
     semver "^6.3.0"
 
-sass@^1.32.2:
+sass@^1.32.5:
   version "1.32.5"
   resolved "https://registry.yarnpkg.com/sass/-/sass-1.32.5.tgz#2882d22ad5748c05fa9bff6c3b0ffbc4f4b9e1dc"
   integrity sha512-kU1yJ5zUAmPxr7f3q0YXTAd1oZjSR1g3tYyv+xu0HZSl5JiNOaE987eiz7wCUvbm4I9fGWGU2TgApTtcP4GMNQ==

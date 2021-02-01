@@ -5,7 +5,7 @@ import { FunctionComponent } from 'react'
 export interface WrittenByProps {
     prefix?: string
     author: Author
-    created: Metadata['time']['created']
+    created?: Metadata['time']['created']
     showDate?: boolean
 }
 

@@ -78,7 +78,7 @@ const SearchLayout: SearchLayoutComponent = ({ children, onSearch }) => {
                                     // eslint-disable-next-line jsx-a11y/no-autofocus
                                     autoFocus
                                     ref={searchBar}
-                                    className={`${styles.search} appearance-none text-2xl text-gray-600 dark:text-gray-200 py-2 pl-4 bg-transparent border-0 outline-none`}
+                                    className={`${styles.search} appearance-none w-full text-2xl text-gray-600 dark:text-gray-200 py-2 pl-4 bg-transparent border-0 outline-none`}
                                     name="search"
                                     type="text"
                                     placeholder="Awesome Story"

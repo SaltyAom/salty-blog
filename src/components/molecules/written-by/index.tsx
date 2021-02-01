@@ -4,7 +4,7 @@ import { WrittenByComponent } from './types'
 
 const WrittenBy: WrittenByComponent = ({
     prefix,
-    created,
+    created = '',
     author,
     showDate = false
 }) => (

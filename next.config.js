@@ -8,6 +8,8 @@ const withPreact = require('next-plugin-preact')
 const withPlugins = require('next-compose-plugins')
 const withStyles = require('@webdeb/next-styles')
 
+const MangleCssClassPlugin = require('mangle-css-class-webpack-plugin')
+
 module.exports = withPlugins(
     [
         [withPreact],

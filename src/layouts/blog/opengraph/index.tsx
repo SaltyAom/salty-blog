@@ -16,6 +16,7 @@ const Header: OpenGraphComponent = ({
     summary,
     author,
     image,
+    tags,
     time: { createdWithTime, modifiedWithTime }
 }) => {
     let graph = {
@@ -58,6 +59,7 @@ const Header: OpenGraphComponent = ({
                     '@id': `${web}/editor/${author.slug}#person`
                 },
                 publisher: { '@id': `${web}#organization` },
+                keywords: tags.join(','),
                 headline: title,
                 datePublished: createdWithTime,
                 dateModified: modifiedWithTime,
@@ -79,6 +81,8 @@ const Header: OpenGraphComponent = ({
             <title>{title}</title>
             <meta name="title" content={title} />
             <meta name="description" content={summary} />
+
+            <meta name="keywords" content={tags.join()} />
 
             <meta property="article:published_time" content={createdWithTime} />
             <meta property="article:modified_time" content={modifiedWithTime} />

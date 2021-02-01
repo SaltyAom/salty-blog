@@ -6,6 +6,7 @@ const blog = createContent({
     slug: 'hello-world',
     summary: 'This is summary',
     author: saltyAom,
+    tags: ['test'],
     image: {
         src: 'opened.jpg',
         dimension: {

@@ -22,6 +22,7 @@ export interface Metadata {
     slug: string
     author: Author
     image: MetaImage
+    tags: string[]
     time: MetaTime
 }
 

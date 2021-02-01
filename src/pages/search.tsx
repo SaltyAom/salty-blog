@@ -38,7 +38,7 @@ const Search = () => {
             let { default: Fuse } = await require('fuse.js')
 
             let engine: IFuse<Metadata> = new Fuse(metadataList, {
-                keys: ['title', 'slug', 'author.name', 'summary']
+                keys: ['title', 'tags', 'author.name', 'summary']
             })
 
             fuse.current = engine

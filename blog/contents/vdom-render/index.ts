@@ -7,6 +7,7 @@ const blog = createContent({
     summary:
         'นการพัฒนาเว็บไซต์ขึ้นมาซักเว็บหนึ่ง โครงสร้างทุกอย่างล้วนมาจาก DOM (Document Object Model) ซึ่งเป็น Object Tree ประมวลผลด้วย JavaScript แต่ด้วยความที่มันมีขนาดใหญ่เอาซะมากๆ การที่เราจะแก้ไขใหม่ทั้งหมดใช้เวลาและทรัพยากรสูง จึงเกิดการมองหาวิธีที่ดีขึ้นก็นี้แทน',
     author: saltyAom,
+    tags: ['Virtual DOM', 'VDOM', 'VDOM render', 'Virtual DOM หลักการ', 'React rebder'],
     image: {
         src: 'vdom-render.jpg'
     },

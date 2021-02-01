@@ -1,4 +1,4 @@
-import { FormEvent, FunctionComponent } from 'react'
+import { FunctionComponent } from 'react'
 
 export interface SearchLayoutProps {
     // eslint-disable-next-line no-unused-vars

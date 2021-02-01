@@ -13,8 +13,6 @@ const Code: MarkdownCodeComponent = ({ children, className = '' }) => {
             let Prism = await require('prismjs')
             await require('prismjs/components/prism-typescript')
 
-            require('@styles/prism.css')
-
             Prism.highlightElement(element)
         },
         []

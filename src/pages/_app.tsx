@@ -1,14 +1,12 @@
 import { useEffect } from 'react'
 
-// import { StoreContext } from 'storeon/react'
-// import store from '@models'
-
 import { AppProps } from 'next/app'
 
 import { AppLayout } from '@layouts'
 
 import '@styles/init.sass'
 import '@styles/tailwind.sass'
+import '@styles/prism.css'
 
 const App = ({ Component, pageProps }: AppProps) => {
     useEffect(() => {
