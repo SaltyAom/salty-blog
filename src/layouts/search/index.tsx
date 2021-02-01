@@ -33,7 +33,7 @@ const SearchLayout: SearchLayoutComponent = ({ children, onSearch }) => {
         let searchBox = event.currentTarget[0] as HTMLInputElement
         let { value: searchKey } = searchBox
 
-        if (isMobile) event.currentTarget.blur()
+        event.currentTarget.blur()
 
         onSearch(searchKey)
     }, [])
