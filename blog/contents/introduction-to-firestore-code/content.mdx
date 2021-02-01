@@ -1,0 +1,836 @@
+## Recap
+
+[ต่อจากพาร์ท](/content/introduction-to-firestore)ที่แล้วที่เราได้รู้วิธีการสร้างโปรเจค Firebase, เปิดใช้งาน Firestore และก็สร้าง Connection ครั้งนี้เรามีลองใช้คำสั่งของ Firestore กันดีกว่า~
+สำหรับใครที่ยังไม่ได้อ่านบทก่อนหน้าก็แนะนำให้ลองอ่านดูก่อนเพื่อความครบถ้วนของเนื้อหานะ~
+
+
+# Firestore Data model
+
+ก่อนที่จะเริ่มเก็บข้อมูลกัน เรามาดู โครงสร้างของ Firestore กันก่อนดีกว่า จะเก็บ data กันยังไงกันดี~
+
+เพื่อให้เห็นเป็นภาพ เราจะมาเก็บ data กับสิ่งที่จับต้องได้กัน อย่าง ร้านขายของ!
+และเราจะมาขายที่ชื่อ Nendoroid กัน!
+
+![1280x1040 | Hatsune Miku Nendoroid](introduction-to-firestore-code/hatsune-miku.jpg)
+
+ด้วยความที่คุณเป็นเจ้าของร้านขายของ แต่คุณอยากจะแสดงสินค้าไว้สำหรับ ลูกค้าที่จะมาดูเว็บของคุณ, แต่คุณไม่รู้ว่าจะเก็บโครงสร้างยังไงดี ถ้าทำ static ไปก็เยอะเกินไปสำหรับสินค้าของคุณอีก คุณเลยจะเก็บขึ้น Firestore!
+
+และตอนนี้ นี่คือ data ที่คุณมี แบบเห็นภาพพพพพ~
+
+![1280x1247 | เห็นภาพมะ? เพราะมันเป็นภาพไง](introduction-to-firestore-code/store.png)
+แล้วเราจะเก็บยังไงกันดีล่ะเนี่ย??
+
+## ขอแนะนำ Firebase Data Model
+
+![1280x987 | Firstore Model](introduction-to-firestore-code/firestore-model.png)
+
+Firestore เก็บข้อมูล NoSQL ในรูปแบบของ Document-Oriented แต่ว่าจะแบ่งเป็น 3 ส่วนใหญ่ๆ ก็คือ
+
+1. Collection เปรียบเสมือน แฟ้ม เก็บข้อมูล เพื่อให้ง่ายต่อการ แยกประเภท ในที่นี้เราขอยกตัวอย่างเป็น ร้านค้า (store)
+2. Document เปรียบเสมือน กระดาษ ไว้เก็บรายละเอียดอีกทีว่า เกี่ยวกับอะไร
+3. Field (Data) เปรียบเสมือน ตัวอักษร หรือ data เพื่อเป็นรายละเอียดบอกว่า อธิบาย
+
+จากที่เห็น Data model ของ Firestore เนี่ย ชัดเจน มากเลยทีเดียว ทำให้ง่ายต่อการ ส่ง project ให้คนอื่นทำต่อมากๆ
+
+นอกจากนี้ เรายังสามารถเก็บ Collection ซ้อน Collection ไว้ได้ด้วย หรือเราเรียกว่า “nest subcollection” เพื่อใช้กับ data ที่มีความ ซับซ้อน หน่อยๆ ไป ถึง มาก เลยทีเดียว
+
+เราสามารถบอกทางสำหรับ Firestore ได้ด้วยการบอกชื่อ collection กับ document เช่น
+
+```javascript
+collection('store').doc('Hatsune Miku')
+```
+
+ตัวอย่างข้างบนก็คือบอกว่าจะเข้าไปที่ collection ที่ชื่อว่า store แล้วไปที่ document ที่ชื่อว่า Hatsune Miku, เวลาจะทำอะไรก็ต้องบอก ทางให้ ชัดเจนก่อนที่จะ เพิ่ม หรือ แก้ไข อะไร
+
+
+# มาเริ่มกันเลยดีกว่า!
+
+หลังจากที่อ่านมาตั้งนาน ก็ยังไม่ได้เริ่มลอง กันเลยซักที OwO ดังนั้น เรามาเริ่มกันเลยดีกว่า!!
+
+เราะจะแบ่งเป็น 4 ส่วนตาม CRUD (หรือก็คือการ Create — Read — Update — Delete) นั่นเอง! หลายๆ คนก็น่าจะคุ้นกับคำนี้มาบ้างแล้ว แล้วจะแยกเอาส่วนที่ Advanced ออกมาไว้ทีหลังนะ
+
+*จริงๆ แล้วอยากให้เป็นแบบ CRUD ทีเดียวเลยมากกว่า แต่ว่า พอทำแล้ว query ของ Firestore เยอะพอกับ สามส่วนที่เหลือเลย (┛◉Д◉)┛ 彡 ┻━┻
+
+
+
+# Create
+
+เรามาเริ่มด้วยการ สร้าง document ก่อนเลย
+
+## collection.add()
+
+สร้าง Document และ Data จาก Collection ที่เลือก โดนที่ชื่อ document จะเป็นแบบสุ่ม
+
+```javascript
+firestore.collection('store').add({
+    item: 'Nendoroid',
+    name: 'Hatsune Miku',
+    id: 33,
+    available: true
+})
+```
+
+Code ด้านบนก็จะบอกว่า ใน collection ชื่อ store ให้เพิ่ม document ที่เก็บ data ดังนี้
+
+-   ชื่อ item มีค่าเป็น Nendoroid
+-   ชื่อ name มีค่าเป็น Hatsune Miku
+-   ชื่อ id มีค่าเป็น 33
+-   ชื่อ available มีค่าเป็น true
+
+จากที่เห็น ตัว Firestore จะจัดการเรื่อง ประเภทให้ โดยที่เราไม่ต้องกำหนดเองเลย สะดวกมากๆ~ (OwO)
+ทีนี้เรามาลองใน Console ก็เลยดีกว่า ว่ามีอะไรเพิ่มเข้าไปหรือยัง
+
+![1280x720 | Firestore Collection](introduction-to-firestore-code/firestore-collection.jpg)
+
+นอกจากนี้เรายังสามารถทำ promise chain ต่อได้ด้วยว่าอยากให้ทำอะไรต่อ แบะสามารถ catch error ได้ด้วยเหมือนกัน โดยตัว document.add() จะส่งค่ากลับมาเป็น ชื่อ document ที่ถูก generate ออกมา
+
+```javascript
+firestore
+    .collection('store')
+    .add({
+        item: 'Nendoroid',
+        name: 'Hatsune Miku',
+        id: 33,
+        available: true
+    })
+    .then(function(doc) {
+        console.info(doc.id)
+    })
+    .catch(function(error) {
+        console.error(error)
+    })
+```
+
+พอลองดูใน console ก่อนจะมี ชื่อ document ขึ้นมาแบบนี้
+
+![1280x657 | Collection ID](introduction-to-firestore-code/console-collection-id.jpg)
+ทีนี้เราก็รู้ id ที่ถูกสร้างขึ้นมาล่ะ~
+
+## collection.doc.set()
+
+เหมือนกับ collection.add() แทบทุกอย่างเลย แต่ว่า เราสามารถตั้งชื่อ document ได้ตามใจเลย~
+
+```javascript
+firestore
+    .collection('store')
+    .doc('Hatsune Miku')
+    .set({
+        item: 'Nendoroid',
+        id: 33,
+        available: true
+    })
+```
+
+**ตัวนี้ก็ใช้ Promise chain ได้เหมือนกัน**
+
+Code ด้านบนก็บอกว่า ใน collection ชื่อ store ให้สร้าง Document ที่ชื่อว่า Hatsune Miku แล้วให้เก็บ data ดังนี้
+
+-   ชื่อ item มีค่าเป็น Nendoroid
+-   ชื่อ id มีค่าเป็น 33
+-   ชื่อ available มีค่าเป็น true
+
+ทีนี้เรามาลองเช็คใน Firestore กันดีกว่า
+
+หลักๆ ของการ Create ก็มี 2 ตัวอย่างที่เห็นนี่แหละนะ~
+
+![1280x720 | Named Collection](introduction-to-firestore-code/firestore-named-collection.jpg)
+
+
+# Read
+
+ส่วนที่สำคัญของ Database ก็คือการ เอาค่าที่เก็บออกมาใช้, กับ Firestore เราจะเรียกวิธีนี้ว่า get() กัน!
+เริ่มจาก เลือก document ที่เราต้องการ แล้ว เพิ่ม .get() ต่อท้ายเป็น promise chain แล้ว .get() จะ return ค่าของ document นั้นออกมา, เราจะใช้ .then เพื่อเอาค่าที่ .get() return ออกมากัน~
+
+ขอเรียกค่าที่ return กลับมาเป็น "docs" นะ
+
+```javascript
+firestore
+    .collection('store')
+    .doc('Hatsune Miku')
+    .get()
+    .then(function(docs) {
+        console.log(docs.data())
+    })
+```
+
+แต่ว่า`ค่าที่ .get() ส่งกลับมาเนี่ยมีมากกว่าแค่ data เฉยๆ` เราเลยมีคำสั่ง .data() เพื่อเอามาใช้เรียก data กัน!
+
+แล้วถ้าเราจะเช็คว่า ไม่มีค่าเลยล่ะ? จะทำยังไงดี??
+
+![1280x452 | Firestore Get Data](introduction-to-firestore-code/firestore-get-data.jpg)
+
+Firestore ก็มี วิธีเช็คง่ายๆ ค่าเติม .exists ตามท้าย docs ที่ return ค่ากลับมา จะได้ไม่ต้องเสียเวลาเรียก .data() ด้วย!
+
+เรามาลองเรียก data ที่ไม่มีใน Firestore กันดูดีกว่า~
+
+```javascript
+firestore
+    .collection('store')
+    .doc('Padoru')
+    .get()
+    .then(function(docs) {
+        if (docs.exists) {
+            console.log(docs.data())
+        } else {
+            console.log('No data')
+        }
+    })
+```
+
+![1280x452 | Firestore no data](introduction-to-firestore-code/firestore-no-data.jpg)
+
+เวลาใช้ .get() ก็อย่าลืมเรียกว่า .data() เพื่อเอา data ออกมาด้วยล่ะ~
+
+
+# Update
+
+ตามสไตล์ของ Database แล้ว, จะต้องมีการ**เปลี่ยนค่า**ที่อยู่ใน Database แน่นอน (ไม่มีก็แย่แล้ววว~)
+ด้วย Firestore เนี่ยทำได้ง่ายมากๆ จนเหมือนกับ collection.doc.set() เลย!
+
+## collection.doc.update()
+
+ถ้าอยากที่จะเปลี่ยนค่าอะไร ก็ใส่ไปตัวupdate() ได้เลย! Firestore จะเปลี่ยนเฉพาะค่าที่เราให้เข้ามาเท่านั้น ที่เหลือจะคงไว้เหมือนเดิม
+
+```javascript
+firestore
+    .collection('store')
+    .doc('Hatsune Miku')
+    .update({
+        available: false
+    })
+```
+
+![1280x720 | Updated value in Firestore](introduction-to-firestore-code/firestore-updated.jpg)
+
+ง่ายมากเลยใช่ไหมล่ะ♫♪ ทีนี้ยังคิดว่า Firebase ยากอยู่ไหนล่ะ~
+
+
+# Delete
+
+แล้วถ้าเราจะลบ document ล่ะ จะเป็นยังไง? อันนี้ง่ายกว่าที่ผ่านๆ มาซะอีก ( ﾟ ▽ ﾟ)/
+
+เริ่มจากเลือก document ที่เราต้องการจะลบ แล้วเติม .delete() เข้าไป ก็จะเป็น
+
+```javascript
+firestore
+    .collection('store')
+    .doc('Hatsune Miku')
+    .delete()
+```
+
+![1280x720 | Data deleted](introduction-to-firestore-code/firestore-deleted.jpg)
+หายไปซะแล้ว… (The Disappearance of Hatsune Miku)
+
+ถ้าอยากรู้ว่าหายไปจริง หรือเปล่า ก็อย่าลืมเช็คใน Firestore Console นะ~
+
+
+
+เป็นยังไงบ้างกับการ CRUD ของ Firestore! ง่ายมากเลยใช่ไหมล่ะ? แล้วถ้าเราจะ query หรือ อะไรประมาณนี้แหละ จะทำยังไงกันดี?
+
+เพราะฉะนั้น! เรามาดู เทคนิค ที่ advance ขึ้นมากว่านี้หน่อยกันดีกว่า~
+
+
+# Realtime Firestore!
+
+มาถึง feature ที่ Firestore ชอบเอามาใช้กันล่ะ นั่นก็คือ… การทำ Firestore แบบ Realtime นั่นเอง!
+โดยวิธีการก็คือ…. การเพิ่ม .onSnapshot() หลัง document นั่นเอง! เวลาเรียกเอาค่า ออกมา ก็เหมือนกับการใช้ .get() เลย~ เพราะฉะนั้นอย่าลืมเอาค่าออกมาด้วยล่ะ
+
+```javascript
+firestore
+    .collection('store')
+    .doc('Hatsune Miku')
+    .onSnapshot(function(docs) {
+        console.log(docs.data())
+    })
+```
+
+![1280x452 | Realtime Changed](introduction-to-firestore-code/realtime-changed.jpg)
+เวลาค่าเปลี่ยน ก็จะแสดง data ใหม่ออกมาหมดเลย
+
+แล้วถ้าเราจะรับ Realtime ล่ะ? จะต้องทำยังไงดี??
+
+ทำได้โดยการเขียนซ้ำ ให้เป็น คำสั่งเปล่าๆ ไปเลยยย, เหมือนกับการเขียน eventListener นั่นแหละ~
+
+```javascript
+firestore
+    .collection('store')
+    .doc('Hatsune Miku')
+    .onSnapshot(function() {
+        // ทำงานเมื่อค่าเปลี่ยน
+    })
+```
+
+แค่นี้เราก็สามารถหยุด Realtime Listener ตามที่ต้องการได้แล้วว~
+
+ข้อควรระวัง: การใช้ .onSnapshot ก็เหมือนกับการใช้ do...while() นั่นแหละ เพราะว่า Firestore จะ .get() data ออกมาก่อนรอบนึง แล้วค่อยรอให้ data ใหม่ update ค่อยเรียกใหม่ -w-
+
+
+# Nested Collection
+
+สำหรับข้อมูลที่ซับซ้อน หรือ อยากเก็บเป็น ระเบียบ กว่าเดิมหน่อย เราสามารถเอา collection มาซ้อนใน document ได้ด้วย!
+
+## collection.doc.collection
+
+หลังจาก collection ตัวที่ 2 ก็ต้อง document ได้เหมือนกัน แล้วก็สามารถซ้อนไปได้เรื่อยๆ เลยด้วย
+
+```javascript
+firestore
+    .collection('store')
+    .doc('Nendoroid')
+    .collection('Hatsune Miku')
+    .doc('33')
+    .set({
+        available: true
+    })
+```
+
+ตัวอย่างนี้ออกว่า ใน Collection ชื่อ store ให้สร้าง document ที่ชื่อว่า Nendoroid แล้วข้างในของ document ให้สร้าง sub collection ที่ชื่อว่า Hatsune Miku แล้วข้างใน sub collection ให้สร้าง document ที่ชื่อว่า 33 แล้วให้ document ที่ชื่อว่า 33 เก็บ ค่าของ available ให้มีค่าเป็น true
+
+![1280x1032 | Firestore Nested Model](introduction-to-firestore-code/firestore-nested-model.png)
+
+อยากแนะนำให้เก็บให้ดูง่ายที่สุด ถ้า data ไม่เยอะมากจริงๆ ก็ใช้แค่ document อันเดียวก็พอ จะได้ไม่ต้องมาสับสนกัน
+
+
+# Query
+
+แล้วเวลาที่เราจะเรียกเอา data ที่ต้องตรงตามเงื่อนไขล่ะ? ถ้าเรา .get() ออกมาทั้งหมดแล้วแยกด้วย if คงจะเปลือง bandwidth กับ เสีย load ที่ไม่ค่อยจำเป็นน่าดู, Firestore ก็เลยมี data สำหรับการใช้ query เหมือนกับ database อื่นๆ เหมือนกัน
+เพื่อความง่ายซักหน่อย เราจะขอ set Database ให้เป็นแบบนี้นะ ใครอยากที่จะลอง set ตามก็ทำได้เลย~ จะได้เล่นกับ Firestore เองได้ด้วย♫♪
+
+```javascript
+firestore
+    .collection('store')
+    .doc('Hatsune Miku')
+    .set({
+        item: 'Nendoroid',
+        id: 33,
+        available: true
+    })
+
+firestore
+    .collection('store')
+    .doc('Flandre Scarlet')
+    .set({
+        item: 'Nendoroid',
+        id: 136,
+        available: true
+    })
+
+firestore
+    .collection('store')
+    .doc('Yae Sakura')
+    .set({
+        item: 'Nendoroid',
+        id: 908,
+        available: false
+    })
+```
+
+![1280x720 | Multiple Mode](introduction-to-firestore-code/firestore-multiple-model.jpg)
+
+## .where()
+
+where เลยเกิดขึ้นมาเพื่อแก้ไขปัญหานี้ เพื่อเอา logic มาใช้หา data ออกมากได้ง่ายขึ้น แทนการใช้ if, โดย syntax การใช้คือ
+
+```javascript
+document.where('ชื่อของ data', 'operator', ค่า)
+```
+
+จากนั้นก็ส่งไปให้ .get() เอา data ออกมา
+ตัว operator ที่ใช้กับ where จะต้องมี Quote (เครื่องหมายคำพูด) ไว้ด้วย ซึ่งได้แก่
+
+* <
+* <=
+* ==
+* \>
+* \>=
+* array_contains
+
+แต่ว่า ถ้า data ที่ส่งออกมากเนี่ย มีแค่อันเดียวก็คงไม่เป็นไร แต่ถ้า มากกว่า 1 อันล่ะ? จะทำยังไงดี??
+
+Firestore เลยมีการสร้าง “Snapshot” ขึ้นมาเป็น payload ให้เก็บค่าจากการ retrieve ที่ออกมาหลายอันแทน, โดยเราสามารถใช้ forEach เพื่อ loop data ออกมาได้! (มีประโยชน์จริงๆ เลย -w-)
+
+เรามาลอง query กันเลยดีกว่า ด้วยการเอา document ที่มี ค่า available เป็น true
+
+```javascript
+firestore
+    .collection('store')
+    .where('available', '==', true)
+    .get()
+    .then(function(snapshot) {
+        snapshot.forEach(function(docs) {
+            console.log(docs.data())
+        })
+    })
+```
+
+![1280x452 | Firestore Value](introduction-to-firestore-code/firestore-value.jpg)
+
+แล้วเรายังสามารถใช้ snapshot ในการนับ document ที่ return ออกมาได้ด้วย!
+
+โดยการเติม .docs.lengthเข้าไป คล้ายๆ กับการนับ array เลย~
+
+```javascript
+firestore
+    .collection('store')
+    .where('available', '==', true)
+    .get()
+    .then(function(snapshot) {
+        console.log(snapshot.docs.length)
+        snapshot.forEach(function(docs) {
+            console.log(docs.data())
+        })
+    })
+```
+
+![1280x452 | Where length](introduction-to-firestore-code/where-length.jpg)
+ได้ จำนวน document ออกมาแล้วววว~
+
+## array_contains
+
+array contains ถูกใช้สำหรับการเปรียบเทียบ string (เพราะถ้าหาไม่ได้ เราก็คงจะลำบากแน่ OwO)
+
+วิธีใช้ก็เหมือนกับ operator อื่นๆ เลย แต่ว่า parameter ของค่าที่ต้องการหา จะต้องเป็น string เท่านั้น
+
+## .orderBy()
+
+เวลาเรียกเอาอะไรสำคัญๆ ออกมา แต่ data การเรียง data ก็ส่งสำคัญมากเหมือนกัน, จะให้เอามาเรียงเองก็คงจะไม่สะดวกเท่าไหร่ ดังนั้น .orderBy() เลยเกิดขึ้นมายังไงล่ะ!
+
+`.orderBy จะทำการเรียงลำดับ` หรือ sort data ที่เรา query ออกมาให้เองเลย~
+
+งั้นเรามาลองเรียงด้วย id กันเลยดีกว่า~
+
+```javascript
+firestore
+    .collection('store')
+    .orderBy('id')
+    .get()
+    .then(function(snapshot) {
+        snapshot.forEach(function(docs) {
+            console.log(docs.data())
+        })
+    })
+```
+
+![1280x452 | Order By](introduction-to-firestore-code/order-by.jpg)
+
+นอกจากนี้ เรายังสามารถให้ Firestore เรียงแบบ ตามที่ต้องการได้ด้วย (ที่ต่างจากที่ตั้ง index) ด้วยการเพิ่ม parameter ที่สองเข้าไป
+
+```javascript
+.orderBy("name", "option")
+```
+
+parameter ที่สอง ถ้าไม่ระบุ จะเป็นการเรียง ตามที่เราตั้ง index ไว้ (ค่า default ของ Firestore คือจากน้อยไปมาก)
+ค่า option ของ การ orderBy มีดังนี้
+
+-   asc - Ascending (จากน้อยไปมาก)
+-   desc - Descending (จากมากไปน้อย)
+
+เวลาใช้ option ก็อย่าลืมใส่ quote เข้าไปด้วยล่ะ♫♪
+
+## .limit()
+
+ทีนี้ ถ้าเรามี data ที่เยอะมากๆ เลย แต่ว่า เราจะเอาออกมาแค่ไม่กี่ตัว ก็คงจะเสีย bandwidth ไปเยอะ แบบที่ไม่จำเป็นใช่ไหมล่ะ (⊙ ヮ ⊙)
+
+Firestore ก็เลยประหยัด data ด้วยการเอา .limit() เข้ามาใช้ เพื่อ “จำกัด” จำนวน data ที่เราต้องการเอาออกมาใช้ ให้พอกับเท่าที่จำเป็น
+
+การใช้ก็ง่ายมากๆ เลย แค่…
+
+```javascript
+.limit(int)
+```
+
+ใส่จำนวนที่ต้องการเข้าไปใน function ก็ได้แล้วววว (ノ^∇^)ノ
+
+งั้นเรามาจำกัด data ที่ต้องการเอาออกมา แค่ 2 อัน กันเลยดีกว่าาา~
+
+```javascript
+firestore
+    .collection('store')
+    .limit(2)
+    .get()
+    .then(function(snapshot) {
+        snapshot.forEach(function(docs) {
+            console.log(docs.data())
+        })
+    })
+```
+
+![1280x452 | Limit Result](introduction-to-firestore-code/limit-result.jpg)
+
+## Cursor Condition
+
+ถ้าคิดว่าจะใช้เปรียบเทียบ มากกว่า — น้อยกว่า ที่มี orderBy ด้วย โดยเฉพาะล่ะก็ ขอแนะนำให้รู้จักกับ Cursor Condition!!
+
+Cursor Condition ถูกสร้างมาเพื่อเปรียบเทียบค่าที่มากกว่า หรือ น้อยกกว่า หลังจาก เรียงแล้วโดยเฉพาะเลย~ แล้วยังสามารถใช้เปรียบเทียบค่าของ string ได้ด้วย!!
+
+ตัว Cursor Condition จะถูกเรียกว่า query cursor เมื่อเป็น query ซึ่งมีทั้งหมด 2 ตัว
+
+-   startAt() → มากกว่า หรือ เท่ากับ (≥)
+-   startAfter() → มากกว่า (>)
+-   endAt() → น้อยกว่า หรือ เท่ากับ (<)
+-   endBefore() → น้อยกว่า หรือ เท่ากับ (≤)
+
+วิธีการใช้คือ ให้ใช้หลัง .orderBy() เพราะว่า เรียงมาแล้ว เลยใช้เปรียบเทียบ cursor ได้ ( ´ ▽ ` )ﾉ
+
+โดยจะอิงค่า แรก ของ orderBy มาเป็น ค่าที่ใช้เปรียบเทียบกับ query
+
+งั้น เราจะลองเอา เฉพาะ id ที่มีค่า เริ่มด้วย 136 .startAt(136)หรือค่า id ≥ 136 ดู
+
+```javascript
+firestore
+    .collection('store')
+    .orderBy('id')
+    .startAt(136)
+    .get()
+    .then(function(snapshot) {
+        snapshot.forEach(function(docs) {
+            console.log(docs.data())
+        })
+    })
+```
+
+![1280x452 | Start At](introduction-to-firestore-code/start-at.jpg)
+
+แต่ว่าถ้าเราใช้ `.startAfter(136)` จะกลายเป็นว่า เอาค่าที่ id มากกว่า 136 แทน
+
+```javascript
+firestore
+    .collection('store')
+    .orderBy('id')
+    .startAfter(136)
+    .get()
+    .then(function(snapshot) {
+        snapshot.forEach(function(docs) {
+            console.log(docs.data())
+        })
+    })
+```
+
+ก็กลายเป็นว่า id 136 ถูกตัดออกไป เพราะเอาแค่ มากกว่า 136 เท่านั้น ( ﾟ ▽ ﾟ)/
+
+การใช้ .endAt() และ .endAfter ก็เหมือนกัน, จะเปลี่ยนเป็น จบที่แทน หรือจะเรียกว่า น้อยกว่าแทน ก็ได้
+
+```javascript
+firestore
+    .collection('store')
+    .orderBy('id')
+    .endAt(136)
+    .get()
+    .then(function(snapshot) {
+        snapshot.forEach(function(docs) {
+            console.log(docs.data())
+        })
+    })
+```
+
+![640x226 | End At](introduction-to-firestore-code/end-at.jpg)
+
+# การสร้าง ดัชนี (Index)
+
+โดยปกติแล้ว Firestore จะสร้าง index ให้อัตโนมัติอยู่แล้ว~
+
+แต่ถ้าตั้งเองก็สามารถทำได้เหมือนกัน ด้วยการสร้าง "ดัชนีผสม" ได้ด้วยเหมือนกัน โดยเราจะสามารถจัดเรียงเองได้ตามที่ต้องการเลย♫♪
+
+เข้าไปใน Firebase Console แล้วจากนั้นก็กดที่ "ดัชนี"
+
+![1280x719 | Firestore Index](introduction-to-firestore-code/firestore-index.jpg)
+
+จากนั้นก็กดที่ "สร้างดัชนีด้วยตัวเอง" เพื่อเริ่มสร้างเลย~
+
+![1280x742 | Firestore Create Index](introduction-to-firestore-code/firestore-create-index.jpg)
+
+จากนั้นการใส่ collection ที่ต้องการที่จะสร้าง index แล้วใส่ document ที่ต้องการกำหนดลงไปได้เลย! จะกำหนด Ascending หรือ Descending ก็ได้ด้วย~
+
+![1280x720 | Firestore Index Creatoin](introduction-to-firestore-code/firestore-index-creation.jpg)
+
+จากนั้นก็รอให้ ดัชนี้ สร้างเสร็จ แค่นี้ก็ถือเป็นที่เรียบร้อยแล้ว♫♪
+
+ข้อดีของการสร้างดัชนี้คืออ เราสามารถกำหนด ดัชนี ให้เรียงไปตามที่ต้องการได้~
+
+
+# เก็บ Offline Data
+
+อย่างที่เกริ่นนำไป คือ Firestore สามารถเก็บ Offline Data ได้ (´･∀･`)
+
+Firestore จะเก็บ request ไว้ใน cache แทน เมื่อ offline แล้ว พอกลับมา online ก็จะทำการ sync กับ server ให้เลย (ノ・∀・)ノ (สุดยอดดด~)
+
+โดยเราสามารถทำได้โดยการเรียก .enablePersistance แค่นี้เองงง~
+
+```javascript
+firestore
+    .enablePersistence()
+    .then(function() {
+        console.log('ใช้แบบ Offline ได้')
+    })
+    .catch(function(error) {
+        if (error.code == 'failed-precondition') {
+            console.log('ใช้ enablePersistance พร้อมกันได้แค่ tab เดียว')
+        } else if (error.code == 'unimplemented') {
+            console.log('ไม่ support แบบ Offline')
+        }
+    })
+```
+
+เวลาจะใช้ enablePersistance() จะต้อง ใช้ก่อนที่จะเรียกก่อนใช้ function Firestore อันอื่นนะ ไม่อย่างงั้นจะใช้ไม่ได้ o(｀・∀・´)○
+
+แล้วก็บาง Browser ที่เก่าหน่อย อาจจะไม่ support การเก็บ cache นะ ถ้าจะcatch error ไว้หน่อยก็ดี~
+
+## กำหนด Offline และ Online
+
+นอนจากนี้เรายังสามารถ force ให้ Firestore ใช้งานแบบ Online หรือ Offline ก็ได้ตามที่เราต้องการเลย~
+
+ด้วยการใช้คำสั่ง .disableNetwork() หรือ .enableNetwork() กับ Firestore โดยตรงเลย
+
+```javascript
+firestore.enablePersistence()
+
+firestore.disableNetwork()
+
+firestore
+    .collection('store')
+    .doc('Hatsune Miku')
+    .get()
+    .then(function(docs) {
+        console.log(docs.data())
+    })
+
+firestore.enableNetwork()
+```
+
+![1280x452 | Firestore Persistance](introduction-to-firestore-code/firestore-persistance.jpg)
+
+ถ้าเรา enablePersistance() จาก data ที่เราเคย write หรือ read มาก่อน ก็จะสามารถใช้งานตอน Offline ได้เลย~ สะดวกดีไหม ヽ(･∀･)ﾉ
+
+นอกจากนี้ถ้าเราไม่ได้สั่ง .enablePersistance() แต่อยาก .get() data จาก cache ก็สามารถทำได้เช่นกัน!
+
+ด้วยการเพิ่ม option {soruce: "cache"} เข้าไปใน .get() เพื่อบังคับให้ เอา data มาจาก cache แทน
+
+```javascript
+let getOptions = {
+    source: 'cache'
+}
+
+firestore
+    .collection('store')
+    .doc('Hatsune Miku')
+    .get(getOptions)
+    .then(function(docs) {
+        console.log(docs.data())
+    })
+```
+
+หมายเหตุสำหรับ Typescript: ตอนกำหนด getOption อย่าลืมกำหนดให้ typeเป็น objectด้วยนะ!
+
+ทีนี้เวลาจะลองดูว่ามี cache ไหม ก็สามารถใช้ getOptions ในการตรวจสอบดูได้นะ (´･∀･)
+
+
+# Transaction
+
+ถ้าเกิดว่า เราจะต้องเขียน query ไปเยอะๆ เนี่ย เท่ากับว่าเราจะต้องส่ง request ในการเขียนไปเยอะเลย ใช่ไหมล่ะ? Firestore เลยมีวิธีการรวบ Request เป็น request เดียว ด้วยการ Transaction!
+
+Transaction ใช้ในการรวบ query ให้เป็นอันเดียวกัน แล้วส่งเป็น request เดียวไปเลยยย~ โดยถ้าใช้ Transaction จะต้องมีทั้งการ อ่าน และ เขียน รวมอยู่ด้วย ถึงควรจะใช้ ไม่งั้นอาจจะเกิดบัคแปลกๆ ขึ้นได้ ー( ´ ▽ ` )ﾉ
+
+เวลาจะใช้ Transaction จะมีข้อแม้อยู่ 2 อย่าง คือ
+
+-   Transaction จะต้องเริ่มจากการ อ่าน ก่อน แล้วจบลงด้วย การเขียน เสมอ
+-   Transaction จัดการกับ data ได้ไม่เกิน 10MB ต่อ 1 transaction
+
+ทีนี้เราจะมาลอง เอา data ของ document ที่ชื่อว่า Hatsune Miku มาใช้กัน ด้วย transaction กัน! เริ่มด้วยการกำหนด Referenence ก่อนเลย~
+
+```javascript
+let ref = firestore.collection('store').doc('Hatsune Miku')
+```
+
+จากนั้น เวลาเขียน transaction เราไม่ต้องเริ่มด้วยการอ้างอิงถึง Referenence ก่อน แต่เริ่มด้วยการสั่ง .runTransaction() เลย
+
+```javascript
+let ref = firestore.collection('store').doc('Hatsune Miku')
+
+firestore.runTransaction()
+```
+
+พอเริ่มมีการใช้ `.runTransaction()` อะไรก็ตามที่เกิดขึ้นข้างใน ก็ให้ return ออกมาให้หมดเลย!
+
+```javascript
+let ref = firestore.collection('store').doc('Hatsune Miku')
+
+firestore.runTransaction(function(transaction) {
+    return transaction
+})
+```
+
+แล้วจากนั้นก็ให้เริ่มโดย เริ่มจากการ อ่าน ก่อน
+เวลาอ่านให้ใช้ transaction แล้วค่อย .get(ref) ในการอ้างอิง path นะ (มันก็จะดูแปลกหน่อยๆ ) ที่เหลือก็ใช้เหมือนตอน .get() ได้ตามปกติเลย
+
+```javascript
+let ref = firestore.collection('store').doc('Hatsune Miku')
+
+firestore.runTransaction(function(transaction) {
+    return transaction.get(ref).then(function(docs) {
+        if (!docs.exists) throw 'Document not existed!'
+        console.log(docs.data())
+    })
+})
+```
+
+![660x233 | Transaction Failure](introduction-to-firestore-code/transaction-failure.jpg)
+
+เวลาใช้ Transaction ถ้าเราไม่จบด้วยการ write, transaction จะทำซ้ำไปเรื่อยๆ ไม่จบ, เลยต้องมีการเขียน หรือ update เพื่อให้ transaction จบไปด้วย~
+
+เรามาลองเปลี่ยนค่า available ให้เป็นตรงข้ามกันดีกว่า~
+
+```javascript
+let ref = firestore.collection('store').doc('Hatsune Miku')
+
+firestore.runTransaction(function(transaction) {
+    return transaction.get(ref).then(function(docs) {
+        if (!docs.exists) throw 'Reference not existed!'
+        let availableBoolean = docs.data().available
+        transaction.update(ref, {
+            available: !availableBoolean
+        })
+    })
+})
+```
+
+ทีนี้เราก็สามารถที่จะเปลี่ยน available ให้เป็นค่าตรงข้ามได้แล้ว~
+
+**หมายเหตุสำหรับ Typescript:** ถ้าหากว่า เรา get ด้วย transaction Typescript อาจจะมี warning ขึ้นเตือนว่า
+Type error: Object is possibly 'undefined'. TS2532
+ที่เป็นอย่างนี้เพราะว่า Typescript ไม่รู้ว่าค่าที่ส่งกลับมาเป็น undefined หรือเปล่า (เพราะว่าเรา request จาก ที่อื่นที่ Typescript ไม่มีรู้) ดังนั้นเวลา เกิดแบบนี้ขึ้น ให้กำหนดค่าของ docs เป็น any ไปเลย~
+
+ทีนี้เรามาพิศูจน์กันดีกว่าว่า ค่าเปลี่ยนไปจริงไหมด้วยการ .get() ก่อนเขียน และ .get() หลังเขียนกันดีกว่า~
+
+```javascript
+let ref = firestore.collection('store').doc('Hatsune Miku')
+
+firestore.runTransaction(function(transaction) {
+    return transaction.get(ref).then(function(docs) {
+        if (!docs.exists) throw 'Reference not existed!'
+        let availableBoolean = docs.data().available
+        transaction.update(ref, {
+            available: !availableBoolean
+        })
+    })
+})
+
+ref.get().then(function(docs) {
+    console.log(docs.data())
+})
+```
+
+![660x233 | Transaction Completed](introduction-to-firestore-code/transaction-complete.jpg)
+Transaction Completed
+
+ทีนี้เราก็รู้แล้วว่า Transaction มันใช้ได้จริงๆ ด้วย o(｀・∀・´)○
+ทางทีดี catch error ของ transaction ไว้ด้วยจะดีมากๆ~
+
+
+# Batch
+
+ครั้งนี้มาเจอกับ Batch บ้างงง~ Batch ก็คล้ายๆ กับ transaction เลย แต่ว่าใช้เฉพาะกับการ เขียน อย่างเดียวเท่านั้น! ไม่ต้องมีการ อ่าน ใช้แค่เขียน อย่างเดียว
+
+Syntax ง่ายกว่า transaction อีก ด้วยการสั่ง .batch() กับ Firestore ได้เลย~ แล้ว 1 batch สามารถใช้ได้กับหลาย Referenece อีกด้วย!
+
+เวลาจะใช้ batch ให้นึกถึง 2 อย่างคือ
+
+1. สั่งได้ Batch ได้ 20 ครั้ง ต่อ 1 Batch
+2. ใช้เฉพาะกับการอ่านอย่างเดียว
+
+เรามาลองเริ่มจากการสร้าง batch ขึ้นมาก่อนเลยดีกว่า!
+
+```javascript
+let batch = firestore.batch()
+```
+
+Batch แบบนี้ถือว่าเป็น 1 batch เพราะถ้าเราเรียก batch ทุกครั้งที่ใช้ คำสั่ง จะเกิด batch ใหม่ขึ้นมา, เราเลยต้องอ้างอิง batch เดิมด้วย
+
+ต่อมา การเขียน การ write ได้เลย!(_≧∀≦_)
+โดยการอ้างอิงจาก batch ก่อน ตามด้วย .set() .updateหรืออะไรก็ตาม แล้วใช้ referenece เป็น parameter แรก แล้ว data ที่ต้องการเป็น parameter ที่สอง
+
+```javascript
+let batch = firestore.batch(),
+    miku = firestore.collection('store').doc('Hatsune Miku')
+
+batch.update(miku, {
+    available: true
+})
+```
+
+จะสั่งหลาย Referenece ก็ได้นะ แต่ตั้งแยก batch ออกมาก
+
+```javascript
+let batch = firestore.batch(),
+    miku = firestore.collection('store').doc('Hatsune Miku'),
+    flandre = firestore.collection('store').doc('Flandre Scarlet')
+
+batch.update(miku, {
+    available: true
+})
+
+batch.update(flandre, {
+    available: false
+})
+```
+
+จากสร้าง batch พอแล้ว ก็สั่ง batch.commit() เพื่อ commit request ได้เลย! (ไม่ต้อง push นะเพราะไม่ใช่ git (´･∀･`) )
+
+```javascript
+let batch = firestore.batch(),
+    miku = firestore.collection('store').doc('Hatsune Miku'),
+    flandre = firestore.collection('store').doc('Flandre Scarlet')
+
+batch.update(miku, {
+    available: true
+})
+
+batch.update(flandre, {
+    available: false
+})
+
+batch.commit()
+```
+
+ถ้าอยากรู้ว่า commit เสร็จหรือยัง ก็สามารถต่อ promise chain ไปได้ด้วย!
+
+```javascript
+let batch = firestore.batch(),
+    miku = firestore.collection('store').doc('Hatsune Miku'),
+    flandre = firestore.collection('store').doc('Flandre Scarlet')
+
+batch.update(miku, {
+    available: true
+})
+
+batch.update(flandre, {
+    available: false
+})
+
+batch
+    .commit()
+    .then(function() {
+        console.log('Committed')
+    })
+    .catch(function(error) {
+        console.log(error)
+    })
+```
+
+จากนั้นก็รอ commit ให้เรียบร้อยแปปนึง (´･∀･)
+![1280x452 | Batch Commited](introduction-to-firestore-code/batch-commited.jpg)
+
+
+# สรุป
+เป็นยังไงบ้างกับ Cloud Firestore สนุกไหม? (´･∀･)
+
+จากเท่าที่เห็น Firestore สามารถทำอะไรได้หลายๆ อย่างที่ไม่แพ้ Database อื่น และเขียนได้ไม่ยากเลย Frontend ได้ด้วย แล้วก็ใครที่คิดว่า Firebase ยากก็อยากให้ลองคิดไหมดูว่ามันง่ายกว่าที่คิดเยอะ (ノ^∇^)
+เมื่อก่อนคนเขียนก็คิดว่ายากเหมือนกันนั่นแหละ ต่อพอมาลองเปิดใจดูจริงๆ แล้ว มันง่าย และ สะดวกกว่าที่คิดไว้เยอะเลย~ ก็อยากให้ลองทำความเข้าใจกันดู เพราะว่ามันสะดวกมากจริงๆ♫♪
+
+Cloud Firestore ถูกออกแบบมาเพื่อให้ใช้ง่ายอยู่แล้วล่ะ
+ก็ใครจะบ้าเอา Database ย้ายมาหน้าบ้านกันล่ะจริงไหม 川´･ω･`川
+แต่มันก็ทำให้ คนที่ไม่ค่อยชอบการเขียน Backend ชีวิตดีขึ้นมาเยอะมากๆ เลยล่ะ (Serverless ก็ด้วย)
+
+อยากให้ลองไปเล่นกับ Cloud Firestore ดูก่อนที่จะเริ่มเอา Firestore เข้า project ต่างๆ เพราะว่าจะได้เข้าใจหลักการทำงานของ Firestore ด้วย เวลามีอะไรผิดพลาดจะได้ไม่ต้องแก้อะไรมากด้วย แถมยังได้เข้าใจ Firestore ได้เพิ่มขึ้นอีกด้วย~
+
+สุดท้ายนี้ การอยากที่จะขอบคุณที่พยายามอ่านมาจนถึงตอนนี้ เพราะว่ามันยาวมากๆ เลย (´･∀･) หวังว่า Firestore จะเป็นอีกหนึ่งทางเลือกในการช่วยให้ทุกๆ อย่างสำเร็จลุล่วงไปได้ด้วยดีนะ♫♪
+318

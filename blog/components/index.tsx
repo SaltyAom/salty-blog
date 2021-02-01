@@ -4,6 +4,7 @@ import { h1, h2, h3, h4, h5, h6, p } from './text'
 import MarkdownImage from './image'
 import MarkdownLink from './link'
 import MarkdownPre from './pre'
+import { ul, li } from './list'
 
 const MarkdownCode = dynamic(() => import('./code'))
 
@@ -18,7 +19,9 @@ const components = {
     h4,
     h5,
     h6,
-    p
+    p,
+    ul,
+    li
 }
 
 export type { MarkdownLinkProps, MarkdownLinkComponent } from './link/types'

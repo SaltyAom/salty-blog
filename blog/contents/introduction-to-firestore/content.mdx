@@ -1,0 +1,169 @@
+พอพูดถึง Firebase หลายคนก็คงจะนึกถึงอะไรที่ ยากๆ แต่ความจริงแล้ว Firebase เนี่ย ทำให้ชีวิตใครหลายคนง่ายขึ้นมากๆ, เราสามารถที่จะทำ Database แบบ Realtime ได้ง่ายมาก และ ยังทำ Authentication ได้โดยที่เราไม่จำเป็นต้องเขียน Backend และ ทำ Database ขึ้นเองด้วยซ้ำ!
+
+`Google ได้สร้าง Firebase ขึ้นมาเพื่อช่วยให้ Developer ไม่ต้องมาทำ Backend เอง` แต่ย้ายมาทำที่ Frontend แทน! (เอ๊ะ? อะไรยังไง?)
+
+ด้วยความที่ Firebase ถูกพัฒนาขึ้นเพื่อให้เป็น BasS (Backend as Service) โดยเฉพาะ, ทำให้แค่ Request สิ่งที่อยากให้ Firebase ทำให้, Firebase ก็จะทำให้เราเองเลย~
+
+![640x360 | Genius](introduction-to-firestore/genius.jpg)
+
+Cloud Firestore ก็เป็นหนึ่ง Feature ใหม่ของ Firebase ที่พึ่งจะออกจากช่วง Beta มาไม่นาน พัฒนาขึ้นมาต่อจาก Realtime Database ทำให้เราไม่ต้องทำหลังบ้านเพื่อเชื่อม Database อีกต่อไป แต่มาทำที่ Frontend แทน! (เย่ๆ~)
+
+และที่ยิ่งกว่านั้นคือ Firestore เนี่ย สามารถเก็บข้อมูลตอน Offline ได้ด้วย! (ช่วยคนที่ทำ PWA ได้เยอะเลย TwT) และยังใช้ได้หลาย Platform, ล่าสุดก็ support Unity แล้วด้วยนะ~
+
+## แก้ข้อสงสัย
+
+-   ถ้าเอามาไว้ที่ Frontend แล้วจะระบุไปที่ Server ยังไง?
+
+    -   Ans: Firebase มี config ไว้ใช้สำหรับระบุใช้ใน Project ที่ต้องการได้เลย, ทำให้บอกได้ว่าจะใช้กับที่ไหน
+
+-   ถ้ามีคน Copy config ของ Project เราก็เอาไปใช้ได้เลยน่ะสิ!!
+
+    -   Ans: ไม่ได้ เพราะ Firebase สามารถเลือกเอา Domain ที่ได้รับอนุญาต เท่านั้น ถึงจะใช้ได้~
+
+-   ถ้ามีคนรันคำสั่ง Firebase ที่เราเชื่อม ใน domain ที่อนุญาตแล้ว สั่ง Firebase ใน console ก็ Takeover Firebase เราได้เลยหรือเปล่า!?
+
+    -   Ans: Firebase ที่ import เป็น module จะไม่ run ในแทบ console นะ, แล้วก็ถ้าลองเชื่อม Firebase ผ่าน console อีกรอบก็ทำไม่ได้ เพราะ Firebase อนุญาตให้ connect ได้ครั้งนึง ต่อการเชื่อมแต่ละครั้ง (ノ*゜ ▽ ゜*)ノ
+
+-   Firebase ใช้ Free ไหม?
+    -   Ans: เริ่มต้นใช้ Free แน่นอน♪♫
+
+ดูรายละเอียดเพิ่มเติมที่ [Firebase Pricing](https://firebase.google.com/pricing)
+
+นอกจากนี้แล้ว ถ้ากลัวไม่ปลอดภัย Cloud Firestore ยังสามารถตั้งกฏสำหรับการควบคุม ได้ด้วย!
+
+## Pricing
+
+Firestore ใช้ Free และมี Feature support เยอะมากๆ ก็จริง แต่ว่า ก็ยังมีข้อจำกัดอยู่ เพราะว่า Firestore ที่มีขนาดใหญ่ ก็ไม่ได้ฟรีไปเลยซะทีเดียว (ก็ไม่มี Database ไหนที่ให้ใช้เยอะๆ แล้วจะฟรี หรอกนะ (￣ ▽ ￣)ノ )
+โดย Firestore แบ่ง pricing เป็น 3 ส่วนดังนี้
+
+![1280x720 | Firebase Pricing](introduction-to-firestore/firebase-pricing.jpg)
+
+จะเห็นได้ว่า ถึงจะ มี Free plan ก็ยังจำเป็นต้องจ่ายเงินถ้าต้องการที่จะใช้กับ Project ใหญ่ๆ แต่ว่า 1GB ก็ไม่น้อยสำหรับ Project เล็กๆ เลยนะ ถ้าบริหารวิธีใช้ดีๆ หนอย โดยเฉพาะกับ Project จบของใครหลายคน♫♪
+
+## ก่อนที่จะเริ่ม
+
+มาดูกันดีกว่าว่า หลักๆ แล้ว Cloud Firestore ทำอะไรได้บ้าง
+
+-   Realtime Database ที่ทำได้ง่ายมากๆ
+-   ไม่จำเป็นที่จะต้องเขียน Backend เอง (ให้ Firebase จัดการให้)
+-   Offline Support (ไม่ต้องกลัวที่จะ Request Fail แล้วหายอีกต่อไป!)
+
+ทำงานได้หลาย Platform
+
+-   แล้วถ้าหากเอาไปเทียบกับ Realtime Database มาล่ะ? จะเป็นยังไง?
+-   Firestore ทำ query ได้ดีกว่า
+-   Firestore ทำงานได้เร็วกว่า
+-   Database Structure ที่ดีกว่า
+
+อ้างอิงจาก [Firebase's Realtime Database vs Firestore](https://firebase.google.com/docs/database/rtdb-vs-firestore)
+
+จะเห็นได้ว่ามัน Ok ในระดับนึงเลย งั้นเรามาลองเริ่มกันเลยดีไหม?
+Cloud Firestore เริ่มต้นใช้ได้ฟรี และไม่ต้องเสียเวลาติดตั้ง Server เพราะว่า Google เตรียมไว้ให้เป็นที่เรียบร้อยแล้ว! (เย่ๆ~)
+
+# มาเริ่มกันเลยดีกว่า
+
+เริ่มจากการสร้าง Project กับ Firebase เอาไว้ก่อนเลยที่ [Firebase Console](https://console.firebase.google.com)
+
+![1280x720 | Firebase Console](introduction-to-firestore/firebase-console.jpg)
+
+กดเพิ่มโครงการเพื่อสร้าง Project Firebase กันเลย!!
+
+ตั้งชื่อ Project แล้วยอมรับข้อตกลง แล้วรอซักแปปนึง ก็จะได้หน้าตาแบบนี้มา!!
+
+![1280x720 | Firebase Project](introduction-to-firestore/firebase-project.jpg)
+
+ได้หน้าตาประมาณแบบนี้ถือว่าการสร้าง Project เป็นอันเสร็จสิ้น (ง่ายมะ ง่ายมะ~)
+
+## เปิดใช้งาน Cloud Firestore
+
+ก่อนเริ่ม ให้ย้อนกลับเข้าไปที่ Firebase Console ก่อน เพื่อเปิด Cloud Firestore ก่อน, เหมือนกับเข้าไปบอกว่า `เราจะใช้ Feature นี้นะ ช่วยเปิดให้หน่อยสิ`
+
+![1280x720 | Enable Firestore](introduction-to-firestore/enable-firestore.jpg)
+
+จากนั้นก็ สร้างฐานข้อมูล และมากำหนดกฏการใช้กันเถอะ~
+
+![1280x721 | Enable Test Mode](introduction-to-firestore/enable-test-mode.jpg)
+
+ถ้าไม่เคยลองเล่นกับ Firestore มาก่อน แนะนำให้ลอง “เริ่มต้นในโหมดทดสอบ” ก่อนเลย, ซึ่งจะอนุญาตให้ อ่าน-เขียน ได้เลย, จากนั้นก็เปิดใช้เลย
+
+![1280x720 | firestore-console](introduction-to-firestore/firestore-console.jpg)
+
+พอเข้ามาถึงหน้านี้ ก็ถือว่าการเปิดใช้งาน Cloud Firestore เสร็จสมบูรณ์~ และสามารถ เริ่มใช้ Firestore ได้เลย~
+
+## เตรียม JavaScript ให้พร้อม
+
+หลังจากสร้าง Project เสร็จไปเป็นที่เรียบร้อย เราก็มาลอง Connect เข้า Cloud Firestore ของเรากันเลยดีกว่า!
+ทีนี้ เราจะต้องเอาคำสั่งควบคุม Firebase เข้ามาใน JavaScript ที่เราต้องการใช้ก่อน, Google ยังให้ใช้ Firebase ได้หลายทางได้อีกด้วย
+
+1. วิธีแรกผ่าน CDN ของ Firebase
+
+```javascript
+// ดึงไฟล์ Firebase มาให้พร้อมใช้งาน~
+<script src="https://www.gstatic.com/firebasejs/5.8.2/firebase.js"></script>
+```
+
+2. ผ่าน Package Manager อย่าง npm หรือ yarn
+
+```
+npm install --save-dev firebase
+
+yarn add firebase
+```
+
+3. ใช้กับ TypeScript
+   เพิ่ม modules ปกติเลย แต่ให้เพิ่ม `@types/firebase` สำหรับ type support ด้วย
+
+```
+npm install --save-dev @types/firebase
+
+yarn add @types/firebase
+```
+
+พอเพิ่ม package มาแล้วก็อย่าลืม require หรือ import firebase สำหรับใช้งานใน JavaScript ด้วยนะ `(สำหรับ CDN จะมีตัวแปรชื่อ firebase ให้อยู่แล้ว)`
+
+```javascript
+const firebase = require('firebase/app')
+require('firebase/firestore')
+
+// หรือใช้ import ก็ได้
+import firebase from 'firebase/app'
+import 'firebase/firestore'
+```
+
+โดยที่ `firebase/app คือ core สำหรับการใช้งาน` จะดึงแค่ feature หลักมาใช้ เพื่อจะได้ตัด feature ที่ไม่ต้องการออก
+ส่วน `firebase/firestore คือดึงส่วนของ Firestore` มาใช้
+
+# มา Connect เข้า Firestore กันเถอะ
+
+หลังจากเอา library ของ Firebase สำหรับการ connect แล้ว ทีนี้เรามาบอก Firebase ว่า “เราจะเชื่อมกับ Project Firebase ที่เราสร้างขึ้น”
+
+ย้อนกลับไปที่ Firebase Console ของเราก่อน เพื่อเอา config สำหรับเชื่อมต่อกับ Firebase
+
+![1280x720 | Firebase Connection](introduction-to-firestore/create-connection.jpg)
+
+จากนั้นก็ copy config ของ Firebase สำหรับ เชื่อมต่อไปไว้ในไฟล์ JavaScript ที่ต้องการใช้งานได้เลย, config แต่ละคนจะต่างออกไป แต่ว่า หน้าตาจะประมาณนี้
+
+```javascript
+var config = {
+    apiKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    authDomain: '[Project name].firebaseapp.com',
+    databaseURL: 'https://[Project name].firebaseio.com',
+    projectId: '[Project name]',
+    storageBucket: '[Project name].appspot.com',
+    messagingSenderId: 'xxxxxxxxxxxx'
+}
+firebase.initializeApp(config)
+```
+
+`ตัว config เอาไว้ใช้ออกว่า ต้องการจะเชื่อมไปที่ไหน` และ `firebase.initializeApp(config) คือการเอา config มาเชื่อมไปที่ Firebase`
+พอเชื่อมเสร็จแล้วก็สามารถใช้ Firebase ได้เลย แต่ว่า ถ้าอยากใช้ Firestore ด้วย จะต้องเรียก firestoreซะก่อนด้วย
+
+```javascript
+let firestore = firebase.firestore()
+```
+
+พอเรียกเสร็จ ก็สามารถใช้งาน Firestore ได้เลย~
+
+## Recap
+
+ตอนนี้เราก็ได้วิธีการสร้างโปรเจค Firebase, เปิดใช้งาน Firestore และก็สร้าง Connection เรียบร้อยแล้ว! ทีนี้เรามาลองใช้คำสั่งของ Firestore ใน[บทต่อไป](/content/introduction-to-firestore-code)กันดีกว่า~

@@ -17,13 +17,24 @@
     @apply text-lg text-gray-700 dark:text-gray-300 my-2
 
 .p
-    @apply text-gray-600 dark:text-gray-400 my-3 text-lg leading-relaxed
+    @apply text-gray-600 dark:text-gray-300 my-3 text-lg
+    line-height: 1.75
 
 .a
     @apply text-blue-400 no-underline p-1 rounded-sm transition-colors
 
     &:hover
         background-color: rgba(0,123,255,.1)
+
+.ul
+    @apply pl-2 text-gray-600 dark:text-gray-300 list-none
+
+.li
+    @apply text-gray-600 dark:text-gray-300 mb-2
+
+    &::before
+        @apply mr-1
+        content: "ー"
 
 .figure
     @apply bg-preload dark:bg-preload-dark rounded-sm overflow-hidden mx-0 my-2
