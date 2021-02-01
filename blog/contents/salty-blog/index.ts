@@ -8,7 +8,11 @@ const blog = createContent({
     author: saltyAom,
     tags: ['optimization', 'web frontend', 'web blog', 'react'],
     image: {
-        src: 'blue-archive.jpg'
+        src: 'perspective.jpg',
+        dimension: {
+            width: 2560,
+            height: 1440
+        }
     },
     time: {
         created: '2021-2-1 20:10'
