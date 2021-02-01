@@ -28,7 +28,6 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
                         (metadata) =>
                             `<url>
                                 <loc>${web}/content/${metadata.slug}</loc>
-                                <lastmod>${metadata.time.modifiedWithTime}</lastmod>
                                 <priority>.5</priority>
                             </url>`
                     )
