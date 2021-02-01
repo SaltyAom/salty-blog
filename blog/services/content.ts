@@ -2,8 +2,6 @@ import { time } from '@blog/services'
 
 import { Metadata } from '@blog/contents'
 
-import getConfig from 'next/config'
-
 import sizeOf from 'image-size'
 
 import { resolve } from 'path'
