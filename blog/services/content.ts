@@ -2,10 +2,13 @@ import { time } from '@blog/services'
 
 import { Metadata } from '@blog/contents'
 
+import getConfig from 'next/config'
+
 import sizeOf from 'image-size'
 
-import fs from 'fs'
-import { resolve } from 'path'
+import { join } from 'path'
+
+const { serverRuntimeConfig } = getConfig()
 
 interface RawMetadata extends Omit<Metadata, 'image' | 'time'> {
     image: string
@@ -22,11 +25,10 @@ export const createContent = (blog: RawMetadata): Metadata => {
         : createdTime
 
     let { width, height } = sizeOf(
-        fs.existsSync(
-            resolve(`./public/content/${blog.slug}/${blog.image}`)
+        join(
+            serverRuntimeConfig.PROJECT_ROOT,
+            `./public/content/${blog.slug}/${blog.image}`
         )
-            ? resolve(`./public/content/${blog.slug}/${blog.image}`)
-            : resolve(`./content/${blog.slug}/${blog.image}`)
     )
 
     if (typeof width === 'undefined' || typeof height === 'undefined')
