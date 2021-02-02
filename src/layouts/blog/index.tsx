@@ -35,12 +35,12 @@ const BlogLayout: BlogLayoutComponent = ({
             <OpenGraph {...metadata} />
             <main
                 className={`${styles['blog-layout']} ${tw(
-                    'w-full py-4 px-6 mt-10 mb-4 sm:my-8 mx-auto'
+                    'flex flex-col w-full mt-10 mb-4 sm:my-8 mx-auto'
                 )}`}
             >
                 <BlogHeader {...metadata} />
                 {children}
-                <footer className={tw`flex flex-col my-4`}>
+                <footer className={tw`flex px-6 flex-col my-4`}>
                     {!isServer && 'share' in navigator && (
                         <section className={tw`my-2`}>
                             <Button className={tw`px-4 py-1`} onClick={share}>

@@ -17,6 +17,8 @@ import {
 
 import Banner from './banner'
 
+import styles from './landing.module.sass'
+
 const LandingLayout: FunctionComponent = ({ children }) => {
     let graph = {
         '@context': 'https://schema.org',
@@ -54,10 +56,9 @@ const LandingLayout: FunctionComponent = ({ children }) => {
             <OpenGraph disableGraph />
             <Banner />
             <main
-                className={tw`w-full flex flex-col mx-auto py-8 px-4`}
-                style={{
-                    maxWidth: 660
-                }}
+                className={`${tw('w-full flex flex-col mx-auto py-8 px-4')} ${
+                    styles['landing-layout']
+                }`}
             >
                 {children}
             </main>

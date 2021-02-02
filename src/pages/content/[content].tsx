@@ -15,6 +15,8 @@ import metadataList from '@contents/list'
 import hydrate from 'next-mdx-remote/hydrate'
 import { MdxRemote } from 'next-mdx-remote/types'
 
+import { isServer } from '@services'
+
 export interface BlogContent extends Metadata {
     Content: MdxRemote.Source
 }
@@ -27,9 +29,9 @@ export interface Blog {
 const BlogPage: FunctionComponent<Blog> = ({ content, recommended }) => {
     let { Content, ...metadata } = content
 
-    let ContentComponent = hydrate(Content, {
-        components
-    })
+    let hydrated = hydrate(Content, { components })
+
+    let ContentComponent = !isServer ? <div>{hydrated}</div> : hydrated
 
     return (
         <BlogLayout metadata={metadata} recommended={recommended}>

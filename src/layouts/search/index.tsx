@@ -111,7 +111,7 @@ const SearchLayout: SearchLayoutComponent = ({ children, onSearch }) => {
                         </div>
                     </form>
                 </header>
-                <main className={tw`flex flex-col w-full`}>{children}</main>
+                <main className={`${styles['search-result']} ${tw('flex flex-col w-full')}`}>{children}</main>
             </section>
         </>
     )
