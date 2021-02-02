@@ -12,10 +12,10 @@ import { reduceMetadata } from '@blog/services'
 import metadatas, { Metadata, getContent, ReducedMetadata } from '@contents'
 import metadataList from '@contents/list'
 
+import { isServer } from '@services/validation'
+
 import hydrate from 'next-mdx-remote/hydrate'
 import { MdxRemote } from 'next-mdx-remote/types'
-
-import { isServer } from '@services'
 
 export interface BlogContent extends Metadata {
     Content: MdxRemote.Source
@@ -26,24 +26,22 @@ export interface Blog {
     recommended: ReducedMetadata[]
 }
 
-const Container: FunctionComponent = ({ children }) => (
-    <div key="blog">{children}</div>
-)
+const Container: FunctionComponent = ({ children }) => <div>{children}</div>
 
 const BlogPage: FunctionComponent<Blog> = ({ content, recommended }) => {
     let { Content, ...metadata } = content
 
     let hydrated = hydrate(Content, { components })
 
-    let ContentComponent = !isServer ? (
-        <Container>{hydrated}</Container>
+    let component = isServer ? (
+        hydrate(Content, { components })
     ) : (
-        hydrated
+        <Container>{hydrated}</Container>
     )
 
     return (
         <BlogLayout metadata={metadata} recommended={recommended}>
-            {ContentComponent}
+            {component}
         </BlogLayout>
     )
 }

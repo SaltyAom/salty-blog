@@ -4,6 +4,7 @@ import { resolve } from 'path'
 import components from '@blog/components'
 
 import renderToString from 'next-mdx-remote/render-to-string'
+import { MdxRemote } from 'next-mdx-remote/types'
 
 export const getContent = async (title: string) => {
     let content = ''
@@ -20,11 +21,7 @@ export const getContent = async (title: string) => {
     }
 
     const Content = await renderToString(content, {
-        components,
-        mdxOptions: {
-            remarkPlugins: [],
-            rehypePlugins: []
-        }
+        components
     })
 
     return Content
