@@ -10,8 +10,6 @@ const withStyles = require('@webdeb/next-styles')
 
 const oneClassName = require('1-classname')
 
-const MangleCssClassPlugin = require('mangle-css-class-webpack-plugin')
-
 module.exports = withPlugins(
     [
         [withPreact],
@@ -123,18 +121,6 @@ module.exports = withPlugins(
                 config.node = {
                     fs: 'empty'
                 }
-            }
-
-            if (!options.dev) {
-                config.plugins.push(
-                    new MangleCssClassPlugin({
-                        classNameRegExp:
-                            '((hover|focus|xs|md|sm|lg|xl)[\\\\]*:)*tw-[a-z_-][a-zA-Z0-9_-]*',
-                        ignorePrefixRegExp:
-                            '((hover|focus|xs|md|sm|lg|xl)[\\\\]*:)*',
-                        log: true
-                    })
-                )
             }
 
             return config

@@ -60,12 +60,12 @@ const SearchLayout: SearchLayoutComponent = ({ children, onSearch }) => {
             <OpenGraph />
             <section
                 className={`${styles['search-layout']} ${tw(
-                    'flex flex-col w-full mb-6 px-4 mx-auto'
+                    'flex flex-col w-full mb-6 mx-auto'
                 )}`}
             >
                 <header
                     className={`${styles['search-container']} ${tw(
-                        'flex flex-col w-full justify-center mx-auto px-2'
+                        'flex flex-col w-full justify-center mx-auto px-8'
                     )}`}
                 >
                     <p
@@ -111,7 +111,7 @@ const SearchLayout: SearchLayoutComponent = ({ children, onSearch }) => {
                         </div>
                     </form>
                 </header>
-                <main className={`${styles['search-result']} ${tw('flex flex-col w-full')}`}>{children}</main>
+                <main className={`${styles['search-result']} ${tw('flex flex-col px-6 w-full')}`}>{children}</main>
             </section>
         </>
     )
