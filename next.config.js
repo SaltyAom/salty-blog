@@ -118,7 +118,10 @@ module.exports = withPlugins(
             if (!options.dev) {
                 config.plugins.push(
                     new MangleCssClassPlugin({
-                        classNameRegExp: '[cl]-[a-z][a-zA-Z0-9_]*',
+                        classNameRegExp:
+                            '((hover|focus|xs|md|sm|lg|xl)[\\\\]*:)*tw-[a-z_-][a-zA-Z0-9_-]*',
+                        ignorePrefixRegExp:
+                            '((hover|focus|xs|md|sm|lg|xl)[\\\\]*:)*',
                         log: true
                     })
                 )
