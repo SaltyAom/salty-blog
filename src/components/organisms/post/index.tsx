@@ -2,14 +2,14 @@ import { FunctionComponent } from 'react'
 
 import NextLink from 'next/link'
 
-import { Metadata } from '@blog/contents'
+import { Metadata, ReducedMetadata } from '@blog/contents'
 
 import { Image } from '@components/atoms'
 import { WrittenBy } from '@components/molecules'
 
 import styles from './post.module.sass'
 
-export const Post: FunctionComponent<Metadata> = ({
+export const Post: FunctionComponent<Metadata | ReducedMetadata> = ({
     title,
     slug,
     author,

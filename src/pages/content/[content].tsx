@@ -7,9 +7,10 @@ import Fuse from 'fuse.js'
 import { BlogLayout } from '@layouts'
 
 import components from '@blog/components'
+import { reduceMetadata } from '@blog/services'
 
-import metadatas, { Metadata, getContent } from '@contents'
-import metadataList from '@blog/contents/list'
+import metadatas, { Metadata, getContent, ReducedMetadata } from '@contents'
+import metadataList from '@contents/list'
 
 import hydrate from 'next-mdx-remote/hydrate'
 import { MdxRemote } from 'next-mdx-remote/types'
@@ -20,7 +21,7 @@ export interface BlogContent extends Metadata {
 
 export interface Blog {
     content: BlogContent
-    recommended: Metadata[]
+    recommended: ReducedMetadata[]
 }
 
 const BlogPage: FunctionComponent<Blog> = ({ content, recommended }) => {
@@ -71,7 +72,7 @@ export const getStaticProps: GetStaticProps<Blog> = async (context) => {
                 limit: 4
             }
         )
-        .map(({ item }) => item)
+        .map(({ item }) => reduceMetadata(item))
         .filter((post) => post.slug !== metadata.slug)
 
     return {

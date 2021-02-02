@@ -1,10 +1,10 @@
 import { FunctionComponent } from 'react'
 
-import { Metadata } from '@blog/contents'
+import { Metadata, ReducedMetadata } from '@blog/contents'
 
 interface BlogLayoutProps {
     metadata: Metadata
-    recommended: Metadata[]
+    recommended: ReducedMetadata[]
 }
 
 export type BlogLayoutComponent = FunctionComponent<BlogLayoutProps>

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Author } from '@authors'
+import { Author, ReducedAuthor } from '@authors'
 
 export interface MetaImage {
     src: string
@@ -27,3 +27,12 @@ export interface Metadata {
 }
 
 export type Metadatas = Record<string, Metadata>
+
+/**
+ * This is used on landing page
+ */
+export interface ReducedMetadata
+    extends Pick<Metadata, 'title' | 'slug' | 'image'> {
+    author: ReducedAuthor
+    time: Pick<MetaTime, 'created'>
+}

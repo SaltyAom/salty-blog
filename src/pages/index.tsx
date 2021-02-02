@@ -2,14 +2,16 @@ import { FunctionComponent } from 'react'
 
 import { GetStaticProps } from 'next'
 
-import { Metadata } from '@contents'
+import { ReducedMetadata } from '@contents'
 import metadataList from '@contents/list'
 
 import { Post } from '@components/organisms'
 import LandingLayout from '@layouts/landing'
 
+import { reduceMetadata } from '@blog/services'
+
 interface Blogs {
-    blogs: Metadata[]
+    blogs: ReducedMetadata[]
 }
 
 const Landing: FunctionComponent<Blogs> = ({ blogs }) => (
@@ -22,7 +24,7 @@ const Landing: FunctionComponent<Blogs> = ({ blogs }) => (
 
 export const getStaticProps: GetStaticProps<Blogs> = async () => ({
     props: {
-        blogs: metadataList.reverse()
+        blogs: metadataList.reverse().map(reduceMetadata)
     }
 })
 

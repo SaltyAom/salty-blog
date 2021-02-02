@@ -7,6 +7,12 @@ const metadatas = transformSlugToKey<Metadata>('slug', metadataList)
 
 export { getContent } from '@blog/services'
 
-export type { Metadata, Metadatas, MetaImage, MetaTime } from './types'
+export type {
+    Metadata,
+    Metadatas,
+    MetaImage,
+    MetaTime,
+    ReducedMetadata
+} from './types'
 
 export default metadatas

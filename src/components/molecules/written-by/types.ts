@@ -1,10 +1,11 @@
-import { Author } from '@blog/authors'
-import { Metadata } from '@blog/contents'
 import { FunctionComponent } from 'react'
+
+import { Metadata } from '@contents'
+import { Author, ReducedAuthor } from '@authors'
 
 export interface WrittenByProps {
     prefix?: string
-    author: Author
+    author: Author | ReducedAuthor
     created?: Metadata['time']['created']
     showDate?: boolean
 }

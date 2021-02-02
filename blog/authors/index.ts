@@ -8,5 +8,5 @@ export const authors = transformSlugToKey<Author>('slug', authorList)
 
 export { default as saltyAom } from './saltyaom'
 
-export type { Author, Authors } from './types'
+export type { Author, Authors, ReducedAuthor } from './types'
 export default authors
