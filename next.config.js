@@ -1,4 +1,4 @@
-const { join } = require('path')
+const { join, basename } = require('path')
 
 const withOffline = require('next-offline')
 const withAnalyze = require('@next/bundle-analyzer')({
@@ -7,6 +7,8 @@ const withAnalyze = require('@next/bundle-analyzer')({
 const withPreact = require('next-plugin-preact')
 const withPlugins = require('next-compose-plugins')
 const withStyles = require('@webdeb/next-styles')
+
+const oneClassName = require('1-classname')
 
 const MangleCssClassPlugin = require('mangle-css-class-webpack-plugin')
 
@@ -18,7 +20,29 @@ module.exports = withPlugins(
             withStyles,
             {
                 sass: true,
-                modules: true
+                modules: true,
+                cssLoaderOptions: {
+                    getLocalIdent: (
+                        loaderContext,
+                        localIdentName,
+                        localName,
+                        options
+                    ) => {
+                        const filePath = loaderContext.resourcePath
+                        const fileBaseName = basename(filePath)
+
+                        if (/\.module\.sass$/.test(fileBaseName)) {
+                            const modulePathParts = filePath.split('/')
+
+                            const moduleName =
+                                modulePathParts[modulePathParts.length - 2]
+
+                            return `_${oneClassName(moduleName + localName)}`
+                        }
+
+                        return localName
+                    }
+                }
             }
         ],
         [
@@ -89,6 +113,15 @@ module.exports = withPlugins(
                 config.node = {
                     fs: 'empty'
                 }
+            }
+
+            if (!options.dev) {
+                config.plugins.push(
+                    new MangleCssClassPlugin({
+                        classNameRegExp: '[cl]-[a-z][a-zA-Z0-9_]*',
+                        log: true
+                    })
+                )
             }
 
             return config
