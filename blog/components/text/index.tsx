@@ -22,8 +22,6 @@ const h6 = (props: TextProps) => <h6 className={styles.h6} {...props} />
 
 const p = (props: TextProps) => <p className={styles.p} {...props} />
 
-const strong = (props: TextProps) => (
-    <span className={styles.strong} {...props} />
-)
+const strong = (props: TextProps) => <b className={styles.strong} {...props} />
 
 export { h1, h2, h3, h4, h5, h6, p, strong }

@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react'
+import { FunctionComponent, useEffect } from 'react'
 
 import { GetStaticPaths, GetStaticProps } from 'next'
 
@@ -11,8 +11,6 @@ import { reduceMetadata } from '@blog/services'
 
 import metadatas, { Metadata, getContent, ReducedMetadata } from '@contents'
 import metadataList from '@contents/list'
-
-import { isServer } from '@services/validation'
 
 import hydrate from 'next-mdx-remote/hydrate'
 import { MdxRemote } from 'next-mdx-remote/types'
@@ -33,11 +31,13 @@ const BlogPage: FunctionComponent<Blog> = ({ content, recommended }) => {
 
     let hydrated = hydrate(Content, { components })
 
-    let component = isServer ? (
-        hydrate(Content, { components })
-    ) : (
-        <Container>{hydrated}</Container>
-    )
+    let component =
+        // @ts-ignore
+        'dangerouslySetInnerHTML' in hydrated?.props ? (
+            hydrate(Content, { components })
+        ) : (
+            <Container>{hydrated}</Container>
+        )
 
     return (
         <BlogLayout metadata={metadata} recommended={recommended}>
