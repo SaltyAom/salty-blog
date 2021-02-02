@@ -21,13 +21,12 @@ const BlogLayout: BlogLayoutComponent = ({
     recommended
 }) => {
     let share = () => {
-        if ('share' in navigator) {
+        if ('share' in navigator)
             navigator.share({
                 title: metadata.title,
                 // eslint-disable-next-line no-restricted-globals
                 url: location.href
             })
-        }
     }
 
     return (

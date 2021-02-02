@@ -26,12 +26,20 @@ export interface Blog {
     recommended: ReducedMetadata[]
 }
 
+const Container: FunctionComponent = ({ children }) => (
+    <div key="blog">{children}</div>
+)
+
 const BlogPage: FunctionComponent<Blog> = ({ content, recommended }) => {
     let { Content, ...metadata } = content
 
     let hydrated = hydrate(Content, { components })
 
-    let ContentComponent = !isServer ? <div>{hydrated}</div> : hydrated
+    let ContentComponent = !isServer ? (
+        <Container>{hydrated}</Container>
+    ) : (
+        hydrated
+    )
 
     return (
         <BlogLayout metadata={metadata} recommended={recommended}>
