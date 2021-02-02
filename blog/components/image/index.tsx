@@ -24,6 +24,7 @@ const MarkdownImage: MarkdownImageComponent = (image) => {
                 width={width}
                 height={height}
                 layout="responsive"
+                quality={90}
             />
         </figure>
     )

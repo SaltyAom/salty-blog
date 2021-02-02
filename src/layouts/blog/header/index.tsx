@@ -36,6 +36,7 @@ const BlogHeader: BlogHeaderComponent = ({
             alt={title}
             width={width}
             height={height}
+            quality={90}
         />
     </header>
 )
