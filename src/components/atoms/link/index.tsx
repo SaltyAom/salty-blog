@@ -1,5 +1,7 @@
 import NextLink from 'next/link'
 
+import tw from '@tailwind'
+
 import styles from './link.module.sass'
 
 import { LinkComponent } from './types'
@@ -16,7 +18,11 @@ const Link: LinkComponent = (props) => {
         <NextLink {...linkProps}>
             <a
                 target={target || ''}
-                className={`inline-flex flex-row items-center ${color} hover:text-blue-400 no-underline p-1 rounded transition-colors ${styles.link} ${className}`}
+                className={
+                    tw(`
+                        inline-flex flex-row items-center ${color} hover:text-blue-400 no-underline p-1 rounded transition-colors ${className}
+                    `) + ` ${styles.link}`
+                }
             >
                 {props.children}
             </a>

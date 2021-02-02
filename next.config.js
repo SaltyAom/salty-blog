@@ -22,26 +22,35 @@ module.exports = withPlugins(
                 sass: true,
                 modules: true,
                 cssLoaderOptions: {
-                    getLocalIdent: (
-                        loaderContext,
-                        localIdentName,
-                        localName,
-                        options
-                    ) => {
-                        const filePath = loaderContext.resourcePath
-                        const fileBaseName = basename(filePath)
+                    getLocalIdent:
+                        process.env.NODE_ENV === 'production'
+                            ? (
+                                  loaderContext,
+                                  localIdentName,
+                                  localName,
+                                  options
+                              ) => {
+                                  const filePath = loaderContext.resourcePath
+                                  const fileBaseName = basename(filePath)
 
-                        if (/\.module\.sass$/.test(fileBaseName)) {
-                            const modulePathParts = filePath.split('/')
+                                  if (/\.module\.sass$/.test(fileBaseName)) {
+                                      const modulePathParts = filePath.split(
+                                          '/'
+                                      )
 
-                            const moduleName =
-                                modulePathParts[modulePathParts.length - 2]
+                                      const moduleName =
+                                          modulePathParts[
+                                              modulePathParts.length - 2
+                                          ]
 
-                            return `_${oneClassName(moduleName + localName)}`
-                        }
+                                      return oneClassName(
+                                          moduleName + localName
+                                      )
+                                  }
 
-                        return localName
-                    }
+                                  return localName
+                              }
+                            : undefined
                 }
             }
         ],
@@ -106,6 +115,7 @@ module.exports = withPlugins(
                 '@blog': join(__dirname, 'blog'),
                 '@contents': join(__dirname, 'blog/contents'),
                 '@authors': join(__dirname, 'blog/authors'),
+                '@tailwind': join(__dirname, 'src/services/tailwind/index.ts'),
                 '~': join(__dirname)
             }
 

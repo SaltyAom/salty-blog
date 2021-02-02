@@ -2,6 +2,8 @@ import { FunctionComponent } from 'react'
 
 import Head from 'next/head'
 
+import tw from '@tailwind'
+
 import { OpenGraph } from '@components/atoms'
 
 import {
@@ -52,7 +54,7 @@ const LandingLayout: FunctionComponent = ({ children }) => {
             <OpenGraph disableGraph />
             <Banner />
             <main
-                className="w-full flex flex-col mx-auto py-8 px-4"
+                className={tw`w-full flex flex-col mx-auto py-8 px-4`}
                 style={{
                     maxWidth: 660
                 }}

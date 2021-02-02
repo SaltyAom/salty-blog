@@ -1,3 +1,5 @@
+import tw from '@tailwind'
+
 import { Share } from 'react-feather'
 
 import { Button, Link } from '@components/atoms'
@@ -32,32 +34,34 @@ const BlogLayout: BlogLayoutComponent = ({
         <>
             <OpenGraph {...metadata} />
             <main
-                className={`${styles['blog-layout']} w-full py-4 px-6 mt-10 mb-4 sm:my-8 mx-auto`}
+                className={`${styles['blog-layout']} ${tw(
+                    'w-full py-4 px-6 mt-10 mb-4 sm:my-8 mx-auto'
+                )}`}
             >
                 <BlogHeader {...metadata} />
                 {children}
-                <footer className="flex flex-col my-4">
+                <footer className={tw`flex flex-col my-4`}>
                     {!isServer && 'share' in navigator && (
-                        <section className="my-2">
-                            <Button className="px-4 py-1" onClick={share}>
-                                <Share className="mr-1" size={18} />
+                        <section className={tw`my-2`}>
+                            <Button className={tw`px-4 py-1`} onClick={share}>
+                                <Share className={tw`mr-1`} size={18} />
                                 Share
                             </Button>
                         </section>
                     )}
 
-                    <section className="my-2">
+                    <section className={tw`my-2`}>
                         <WrittenBy
                             author={metadata.author}
                             prefix="Written by"
                         />
                     </section>
 
-                    <section className="mb-4">
+                    <section className={tw`mb-4`}>
                         {metadata.tags.map((tag) => (
                             <Link
                                 href={`/search?q=${encodeURI(tag)}`}
-                                className="bg-gray-100 dark:bg-preload-dark text-base sm:text-lg px-3 py-1 capitalize mr-1 mb-1"
+                                className={tw`bg-gray-100 dark:bg-preload-dark text-base sm:text-lg px-3 py-1 capitalize mr-1 mb-1`}
                             >
                                 {tag}
                             </Link>

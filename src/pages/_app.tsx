@@ -6,7 +6,6 @@ import { AppProps } from 'next/app'
 import { AppLayout } from '@layouts'
 
 import '@styles/init.sass'
-import '@styles/tailwind.sass'
 import '@styles/prism.css'
 
 declare global {

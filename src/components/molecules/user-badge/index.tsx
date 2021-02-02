@@ -2,6 +2,8 @@ import { FunctionComponent } from 'react'
 
 import NextImage from 'next/image'
 
+import tw from '@tailwind'
+
 import { Link } from '@components/atoms'
 
 import { Author, ReducedAuthor } from '@authors'
@@ -15,7 +17,9 @@ const UserBadge: FunctionComponent<Author | ReducedAuthor> = (author) => (
         as={`/editor/${author.slug}`}
     >
         <div
-            className={`${styles.image} bg-preload dark:bg-preload-dark ml-1 mr-2 overflow-hidden`}
+            className={`${styles.image} ${tw(
+                'bg-preload dark:bg-preload-dark ml-1 mr-2 overflow-hidden'
+            )}`}
         >
             <NextImage
                 src={`/editor/${author.slug}/${author.image}`}

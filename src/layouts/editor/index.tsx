@@ -1,5 +1,7 @@
 import Head from 'next/head'
 
+import tw from '@tailwind'
+
 import { OpenGraph } from '@components/atoms'
 
 import {
@@ -58,7 +60,9 @@ const EditorLayout: EditorLayoutComponent = (props) => {
             </Head>
             <OpenGraph disableGraph />
             <main
-                className={`${styles.editor} flex flex-col items-start mx-auto px-4`}
+                className={`${styles.editor} ${tw(
+                    'flex flex-col items-start mx-auto px-4'
+                )}`}
             >
                 <EditorHeader {...author} />
                 {children}

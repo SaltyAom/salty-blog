@@ -2,6 +2,8 @@ import { FunctionComponent } from 'react'
 
 import { GetStaticPaths, GetStaticProps } from 'next'
 
+import tw from '@tailwind'
+
 import { Metadata } from '@contents'
 import metadataList from '@contents/list'
 
@@ -20,7 +22,9 @@ type EditorPageComponent = FunctionComponent<EditorPageProps>
 
 const EditorPage: EditorPageComponent = ({ author, contents }) => (
     <EditorLayout {...author}>
-        <h1 className="text-gray-400 dark:text-gray-400 text-2xl ml-2 font-medium my-0">
+        <h1
+            className={tw`text-gray-400 dark:text-gray-400 text-2xl ml-2 font-medium my-0`}
+        >
             Written by {author.name}
         </h1>
         {contents.map((content) => (
