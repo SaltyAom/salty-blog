@@ -8,11 +8,9 @@ const Button: ButtonComponent = (props) => (
     // eslint-disable-next-line react/button-has-type
     <button
         {...props}
-        className={
-            tw(
-                `inline-flex flex-row items-center bg-gray-100 dark:bg-preload-dark text-gray-600 dark:text-gray-300 hover:text-blue-400 no-underline my-1 px-4 py-1 text-base sm:text-lg rounded transition-colors border-0 cursor-pointer ${props.className}`
-            ) + ` ${styles.button}`
-        }
+        className={`${tw(
+            'inline-flex flex-row items-center bg-gray-100 dark:bg-preload-dark text-gray-600 dark:text-gray-300 hover:text-blue-400 no-underline my-1 px-4 py-1 text-base sm:text-lg rounded transition-colors border-0 cursor-pointer'
+        )} ${props.className} ${styles.button}`}
     >
         {props.children}
     </button>

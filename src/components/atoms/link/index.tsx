@@ -18,11 +18,9 @@ const Link: LinkComponent = (props) => {
         <NextLink {...linkProps}>
             <a
                 target={target || ''}
-                className={
-                    tw(`
-                        inline-flex flex-row items-center ${color} hover:text-blue-400 no-underline p-1 rounded transition-colors ${className}
-                    `) + ` ${styles.link}`
-                }
+                className={`${tw(
+                    `inline-flex flex-row items-center ${color} hover:text-blue-400 no-underline p-1 rounded transition-colors`
+                )} ${className} ${styles.link}`}
             >
                 {props.children}
             </a>

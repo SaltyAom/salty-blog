@@ -11,11 +11,15 @@ const Image: ImageComponent = (props) => {
 
     return (
         <figure
-            className={
-                tw(
-                    `bg-preload dark:bg-preload-dark rounded-sm overflow-hidden mx-0 my-2 ${className}`
-                ) + ` ${styles.figure}`
-            }
+            className={`
+                    ${tw(
+                        'bg-preload dark:bg-preload-dark rounded-sm overflow-hidden mx-0 my-2'
+                    )}
+                    ${className}
+                    ${styles.figure}
+                `
+                .trimLeft()
+                .trimRight()}
         >
             <NextImage {...imageProps} />
         </figure>

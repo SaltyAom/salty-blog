@@ -12,7 +12,7 @@ import styles from './user-badge.module.sass'
 
 const UserBadge: FunctionComponent<Author | ReducedAuthor> = (author) => (
     <Link
-        className="align-middle mb-1"
+        className={tw`align-middle mb-1`}
         href="/editor/[editor]"
         as={`/editor/${author.slug}`}
     >

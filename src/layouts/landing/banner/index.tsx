@@ -48,7 +48,7 @@ const Banner = () => (
                 </ul>
             </section>
             <Image
-                className="rounded-full"
+                className={tw`rounded-full`}
                 src="/editor/saltyaom/saltyaom.jpg"
                 width={160}
                 height={160}
