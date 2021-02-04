@@ -4,7 +4,7 @@ import { useCallback, useState, useRef, useEffect } from 'react'
 import tw from '@tailwind'
 
 import { SearchLayout } from '@layouts'
-import { Post } from '@components/molecules'
+import { Post } from '@components/organisms'
 
 import { Metadata } from '@contents'
 
@@ -36,7 +36,7 @@ const Search = () => {
 
     useEffect(() => {
         let createEngine = async () => {
-            let metadataList = await get<Metadata[]>('/api/editor')
+            let metadataList = await get<Metadata[]>('/api/metadata')
             let { default: Fuse } = await require('fuse.js')
 
             let engine: IFuse<Metadata> = new Fuse(metadataList, {
@@ -78,6 +78,8 @@ const Search = () => {
                 </h1>
             </SearchLayout>
         )
+
+    console.log("Found")
 
     return (
         <SearchLayout onSearch={onSearch}>

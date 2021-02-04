@@ -2,8 +2,7 @@ import styles from './tailwind.module.sass'
 
 const tw = (classNames: string | TemplateStringsArray) =>
     (typeof classNames === 'object' ? classNames[0] : classNames)
-        .trimLeft()
-        .trimRight()
+        .trim()
         .split(' ')
         .map((className) => styles[className])
         .join(' ')

@@ -11,7 +11,7 @@ import { Author, authors } from '@authors'
 
 import EditorLayout from '@layouts/editor'
 
-import { Post } from '@components/molecules'
+import { Post } from '@components/organisms'
 
 interface EditorPageProps {
     author: Author

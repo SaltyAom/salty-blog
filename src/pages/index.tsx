@@ -10,7 +10,7 @@ import LandingLayout from '@layouts/landing'
 
 import { reduceMetadata } from '@blog/services'
 
-interface Blogs {
+export interface Blogs {
     blogs: ReducedMetadata[]
 }
 
