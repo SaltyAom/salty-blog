@@ -1,4 +1,4 @@
-const { join, basename } = require('path')
+const { join } = require('path')
 
 const withOffline = require('next-offline')
 const withAnalyze = require('@next/bundle-analyzer')({
@@ -22,32 +22,10 @@ module.exports = withPlugins(
                 cssLoaderOptions: {
                     getLocalIdent:
                         process.env.NODE_ENV === 'production'
-                            ? (
-                                  loaderContext,
-                                  localIdentName,
-                                  localName,
-                                  options
-                              ) => {
-                                  const filePath = loaderContext.resourcePath
-                                  const fileBaseName = basename(filePath)
-
-                                  if (/\.module\.sass$/.test(fileBaseName)) {
-                                      const modulePathParts = filePath.split(
-                                          '/'
-                                      )
-
-                                      const moduleName =
-                                          modulePathParts[
-                                              modulePathParts.length - 2
-                                          ]
-
-                                      return oneClassName(
-                                          moduleName + localName
-                                      )
-                                  }
-
-                                  return localName
-                              }
+                            ? ({ resourcePath }, _, className) =>
+                                  /\.module\.sass$/.test(resourcePath)
+                                      ? oneClassName(resourcePath + className)
+                                      : localName
                             : undefined
                 }
             }
