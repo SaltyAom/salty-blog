@@ -13,8 +13,7 @@ const Image: ImageComponent = (props) => {
         <figure
             className={`${tw(
                 'bg-preload dark:bg-preload-dark rounded-sm overflow-hidden mx-0 my-2'
-            )} ${className} ${styles.figure}
-                `}
+            )} ${className} ${styles.figure}`}
         >
             <NextImage {...imageProps} />
         </figure>
