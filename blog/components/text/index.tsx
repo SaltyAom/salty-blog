@@ -8,7 +8,9 @@ type TextProps = DetailedHTMLProps<
     HTMLHeadingElement
 >
 
-const h1 = (props: TextProps) => <h1 className={styles.h1} {...props} />
+const h1 = (props: TextProps) => (
+    <h1 className={`${styles.h1} ${styles['h1-dark']}`} {...props} />
+)
 
 const h2 = (props: TextProps) => <h2 className={styles.h2} {...props} />
 

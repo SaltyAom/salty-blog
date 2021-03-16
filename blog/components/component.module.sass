@@ -1,24 +1,45 @@
 .h1
     @apply text-4xl sm:text-5xl text-gray-900 dark:text-gray-100 font-medium mt-8 mb-4
 
+    @screen dark
+        @apply text-gray-100
+
 .h2
     @apply text-3xl sm:text-4xl text-gray-900 dark:text-gray-100 my-5
+
+    @screen dark
+        @apply text-gray-100
 
 .h3
     @apply text-2xl text-gray-800 dark:text-gray-200 my-4
 
+    @screen dark
+        @apply text-gray-200
+
 .h4
     @apply text-xl text-gray-700 dark:text-gray-300 my-4 font-normal
+
+    @screen dark
+        @apply text-gray-300
 
 .h5
     @apply text-lg text-gray-600 dark:text-gray-400 my-3 font-normal
 
+    @screen dark
+        @apply text-gray-400
+
 .h6
     @apply text-sm text-gray-400 dark:text-gray-400 my-2 font-light
+
+    @screen dark
+        @apply text-gray-400
 
 .p
     @apply text-gray-600 dark:text-gray-300 my-3 text-lg
     line-height: 1.75
+
+    @screen dark
+        @apply text-gray-300
 
 .a
     @apply text-blue-400 no-underline p-1 rounded-sm transition-colors
@@ -29,12 +50,18 @@
 .ul
     @apply pl-2 text-gray-600 dark:text-gray-300 list-none
 
+    @screen dark
+        @apply text-gray-300
+
 .li
     @apply text-gray-600 dark:text-gray-300 mb-2
 
     &::before
         @apply mr-1
         content: "ー"
+
+    @screen dark
+        @apply text-gray-300
 
 .figure
     @apply bg-preload dark:bg-preload-dark rounded-sm overflow-hidden mx-0 my-2
