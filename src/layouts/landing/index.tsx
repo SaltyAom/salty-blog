@@ -56,7 +56,7 @@ const LandingLayout: FunctionComponent = ({ children }) => {
             <OpenGraph disableGraph />
             <Banner />
             <main
-                className={`${tw('w-full flex flex-col mx-auto py-8 px-4')} ${
+                className={`${tw('w-full flex flex-col mx-auto py-8 px-6')} ${
                     styles['landing-layout']
                 }`}
             >
