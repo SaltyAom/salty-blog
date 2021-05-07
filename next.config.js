@@ -8,6 +8,7 @@ const withPreact = require('next-plugin-preact')
 const withPlugins = require('next-compose-plugins')
 
 const withStyles = require('./tools/withStyles')
+const { useEsbuildLoader } = require('./tools/useEsbuild')
 
 module.exports = withPlugins(
     [
@@ -64,6 +65,8 @@ module.exports = withPlugins(
             loader: 'default'
         },
         webpack(config, options) {
+            useEsbuildLoader(config)
+
             config.resolve.alias = {
                 ...config.resolve.alias,
                 '@pages': join(__dirname, 'src/pages'),
@@ -79,11 +82,10 @@ module.exports = withPlugins(
                 '~': join(__dirname)
             }
 
-            if (!options.isServer) {
+            if (!options.isServer)
                 config.node = {
                     fs: 'empty'
                 }
-            }
 
             return config
         }

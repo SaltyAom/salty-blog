@@ -12,11 +12,10 @@ import { reduceMetadata } from '@blog/services'
 import metadatas, { Metadata, getContent, ReducedMetadata } from '@contents'
 import metadataList from '@contents/list'
 
-import hydrate from 'next-mdx-remote/hydrate'
-import { MdxRemote } from 'next-mdx-remote/types'
+import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'
 
 export interface BlogContent extends Metadata {
-    Content: MdxRemote.Source
+    source: MDXRemoteSerializeResult
 }
 
 export interface Blog {
@@ -24,24 +23,12 @@ export interface Blog {
     recommended: ReducedMetadata[]
 }
 
-const Container: FunctionComponent = ({ children }) => <div>{children}</div>
-
 const BlogPage: FunctionComponent<Blog> = ({ content, recommended }) => {
-    let { Content, ...metadata } = content
-
-    let hydrated = hydrate(Content, { components })
-
-    let component =
-        // @ts-ignore
-        'dangerouslySetInnerHTML' in hydrated?.props ? (
-            hydrate(Content, { components })
-        ) : (
-            <Container>{hydrated}</Container>
-        )
+    let { source, ...metadata } = content
 
     return (
         <BlogLayout metadata={metadata} recommended={recommended}>
-            {component}
+            <MDXRemote {...source} components={components} />
         </BlogLayout>
     )
 }
@@ -55,10 +42,10 @@ export const getStaticProps: GetStaticProps<Blog> = async (context) => {
     let title = context.params?.content as string
 
     let metadata = metadatas[title]
-    let Content = await getContent(title)
+    let source = await getContent(title)
 
     let engine = new Fuse(metadataList, {
-        keys: ['title', 'slugs', 'tags', 'author.name', 'summary']
+        keys: ['tags', 'title', 'slugs', 'author.name', 'summary']
     })
 
     let recommended = engine
@@ -87,7 +74,7 @@ export const getStaticProps: GetStaticProps<Blog> = async (context) => {
         props: {
             content: {
                 ...metadata,
-                Content
+                source
             },
             recommended
         }

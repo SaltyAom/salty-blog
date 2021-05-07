@@ -1,10 +1,7 @@
 import fs from 'fs'
 import { resolve } from 'path'
 
-import components from '@blog/components'
-
-import renderToString from 'next-mdx-remote/render-to-string'
-import { MdxRemote } from 'next-mdx-remote/types'
+import { serialize } from 'next-mdx-remote/serialize'
 
 export const getContent = async (title: string) => {
     let content = ''
@@ -20,9 +17,7 @@ export const getContent = async (title: string) => {
         // Nothing
     }
 
-    const Content = await renderToString(content, {
-        components
-    })
+    const source = await serialize(content)
 
-    return Content
+    return source
 }
