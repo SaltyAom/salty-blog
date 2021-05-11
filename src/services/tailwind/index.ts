@@ -2,10 +2,11 @@ import { isProduction } from '@services/validation'
 
 import styles from './tailwind.module.sass'
 
+export const combine = (...classNames: string[]) => classNames.join(' ')
+
 const tw = (classNames: string | TemplateStringsArray) => {
-    let names = (typeof classNames === 'object'
-        ? classNames[0]
-        : classNames
+    let names = (
+        typeof classNames === 'object' ? classNames[0] : classNames
     ).trim()
 
     if (!isProduction) return names

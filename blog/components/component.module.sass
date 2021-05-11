@@ -64,15 +64,22 @@
         @apply text-gray-300
 
 .figure
-    @apply bg-preload dark:bg-preload-dark rounded-sm overflow-hidden mx-0 my-2
+    @apply relative bg-preload dark:bg-preload-dark rounded-sm overflow-hidden mx-0 my-2
     box-shadow: 0 8px 25px rgba(0 0 0 / 21%)
 
     &.png
         @apply bg-transparent dark:bg-transparent
         box-shadow: unset !important
 
-    & > div
+    & > div:first-child
+        @apply z-20
         display: block !important
+
+.blurhash
+    @apply z-10 top-0 left-0
+    position: absolute !important
+    width: 100% !important
+    height: 100% !important
 
 .strong
     @apply p-1 font-sans text-blue-400 inline rounded

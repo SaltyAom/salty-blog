@@ -10,22 +10,33 @@ import LandingLayout from '@layouts/landing'
 
 import { reduceMetadata } from '@blog/services'
 
+import { BlurhashMap, BlurhashProvider } from '@services/blurhash'
+import { generateBlurhashMap } from '@services/blurhash/server'
+
 export interface Blogs {
     blogs: ReducedMetadata[]
+    blurhashMap: BlurhashMap
 }
 
-const Landing: FunctionComponent<Blogs> = ({ blogs }) => (
-    <LandingLayout>
-        {blogs.map((content) => (
-            <Post {...content} />
-        ))}
-    </LandingLayout>
+const Landing: FunctionComponent<Blogs> = ({ blogs, blurhashMap }) => (
+    <BlurhashProvider value={blurhashMap}>
+        <LandingLayout>
+            {blogs.map((content) => (
+                <Post {...content} />
+            ))}
+        </LandingLayout>
+    </BlurhashProvider>
 )
 
-export const getStaticProps: GetStaticProps<Blogs> = async () => ({
-    props: {
-        blogs: metadataList.reverse().map(reduceMetadata)
+export const getStaticProps: GetStaticProps<Blogs> = async () => {
+    let blogs = [...metadataList].reverse().map(reduceMetadata)
+
+    return {
+        props: {
+            blogs,
+            blurhashMap: await generateBlurhashMap({ recommended: blogs })
+        }
     }
-})
+}
 
 export default Landing

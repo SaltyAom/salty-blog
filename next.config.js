@@ -1,3 +1,6 @@
+// https://github.com/lovell/sharp/issues/2655#issuecomment-815684743
+require('sharp')
+
 const { join } = require('path')
 
 const withOffline = require('next-offline')

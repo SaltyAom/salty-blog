@@ -1,5 +1,9 @@
 import dynamic from 'next/dynamic'
 
+import { Blurhash } from 'react-blurhash'
+
+import { useBlurhashMap } from '@services/blurhash'
+
 import { MarkdownImageComponent } from './types'
 
 import styles from '../component.module.sass'
@@ -16,6 +20,9 @@ const MarkdownImage: MarkdownImageComponent = (image) => {
 
     let isPng = src.endsWith('.png') || src.endsWith('.gif') ? styles.png : ''
 
+    let blurhashMap = useBlurhashMap()
+    let blurhash = blurhashMap[src]
+
     return (
         <figure className={`${isPng} ${styles.figure}`}>
             <Image
@@ -26,6 +33,19 @@ const MarkdownImage: MarkdownImageComponent = (image) => {
                 layout="responsive"
                 quality={90}
             />
+            {blurhash &&
+            typeof blurhash !== 'undefined' &&
+            typeof blurhash.hash !== 'undefined' ? (
+                <Blurhash
+                    className={styles.blurhash}
+                    hash={blurhash.hash}
+                    width={blurhash.width}
+                    height={blurhash.height}
+                    resolutionX={32}
+                    resolutionY={32}
+                    punch={1}
+                />
+            ) : null}
         </figure>
     )
 }

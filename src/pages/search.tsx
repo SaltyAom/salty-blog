@@ -1,5 +1,13 @@
 /* eslint-disable global-require */
-import { useCallback, useState, useRef, useEffect } from 'react'
+import {
+    useCallback,
+    useState,
+    useRef,
+    useEffect,
+    FunctionComponent
+} from 'react'
+
+import { GetStaticProps } from 'next'
 
 import tw from '@tailwind'
 
@@ -9,10 +17,19 @@ import { Post } from '@components/organisms'
 import { Metadata } from '@contents'
 
 import { get } from '@services'
+import { BlurhashMap } from '@services/blurhash'
+import { generateBlurhashMap } from '@services/blurhash/server'
+
+import { reduceMetadata } from '@blog/services'
+import metadata from '@blog/contents/list'
 
 import IFuse from 'fuse.js'
 
-const Search = () => {
+interface SearchProps {
+    blurhashMap: BlurhashMap
+}
+
+const Search: FunctionComponent<SearchProps> = ({ blurhashMap }) => {
     let [searchResult, updateSearchResult] = useState<Metadata[] | null>(null)
     let deferSearch = useRef('')
 
@@ -51,11 +68,12 @@ const Search = () => {
         createEngine()
     }, [])
 
-    if (!searchResult) return <SearchLayout onSearch={onSearch} />
+    if (!searchResult)
+        return <SearchLayout onSearch={onSearch} blurhashMap={blurhashMap} />
 
     if (!searchResult.length)
         return (
-            <SearchLayout onSearch={onSearch}>
+            <SearchLayout onSearch={onSearch} blurhashMap={blurhashMap}>
                 <a
                     className={tw`block mx-auto my-4`}
                     target="_blank"
@@ -79,10 +97,8 @@ const Search = () => {
             </SearchLayout>
         )
 
-    console.log("Found")
-
     return (
-        <SearchLayout onSearch={onSearch}>
+        <SearchLayout onSearch={onSearch} blurhashMap={blurhashMap}>
             <h1
                 className={tw`text-gray-500 dark:text-gray-400 mx-2 my-0 font-medium`}
             >
@@ -94,5 +110,13 @@ const Search = () => {
         </SearchLayout>
     )
 }
+
+export const getStaticProps: GetStaticProps<SearchProps> = async () => ({
+    props: {
+        blurhashMap: await generateBlurhashMap({
+            recommended: metadata.map(reduceMetadata)
+        })
+    }
+})
 
 export default Search

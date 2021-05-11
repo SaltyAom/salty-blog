@@ -2,6 +2,8 @@ import { FunctionComponent } from 'react'
 
 import { GetStaticPaths, GetStaticProps } from 'next'
 
+import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'
+
 import Fuse from 'fuse.js'
 
 import { BlogLayout } from '@layouts'
@@ -9,10 +11,11 @@ import { BlogLayout } from '@layouts'
 import components from '@blog/components'
 import { reduceMetadata } from '@blog/services'
 
+import { BlurhashProvider, BlurhashMap } from '@services/blurhash'
+import { generateBlurhashMap } from '@services/blurhash/server'
+
 import metadatas, { Metadata, getContent, ReducedMetadata } from '@contents'
 import metadataList from '@contents/list'
-
-import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote'
 
 export interface BlogContent extends Metadata {
     source: MDXRemoteSerializeResult
@@ -21,15 +24,22 @@ export interface BlogContent extends Metadata {
 export interface Blog {
     content: BlogContent
     recommended: ReducedMetadata[]
+    blurhashMap: BlurhashMap
 }
 
-const BlogPage: FunctionComponent<Blog> = ({ content, recommended }) => {
+const BlogPage: FunctionComponent<Blog> = ({
+    content,
+    recommended,
+    blurhashMap
+}) => {
     let { source, ...metadata } = content
 
     return (
-        <BlogLayout metadata={metadata} recommended={recommended}>
-            <MDXRemote {...source} components={components} />
-        </BlogLayout>
+        <BlurhashProvider value={blurhashMap}>
+            <BlogLayout metadata={metadata} recommended={recommended}>
+                <MDXRemote {...source} components={components} />
+            </BlogLayout>
+        </BlurhashProvider>
     )
 }
 
@@ -76,7 +86,8 @@ export const getStaticProps: GetStaticProps<Blog> = async (context) => {
                 ...metadata,
                 source
             },
-            recommended
+            recommended,
+            blurhashMap: await generateBlurhashMap({ title, recommended })
         }
     }
 }

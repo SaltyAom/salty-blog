@@ -6,6 +6,7 @@ import tw from '@tailwind'
 
 import { Metadata } from '@contents'
 import metadataList from '@contents/list'
+import { reduceMetadata } from '@blog/services'
 
 import { Author, authors } from '@authors'
 
@@ -13,24 +14,30 @@ import EditorLayout from '@layouts/editor'
 
 import { Post } from '@components/organisms'
 
+import { generateBlurhashMap } from '@services/blurhash/server'
+import { BlurhashMap, BlurhashProvider } from '@services/blurhash'
+
 interface EditorPageProps {
     author: Author
     contents: Metadata[]
+    blurhashMap: BlurhashMap
 }
 
 type EditorPageComponent = FunctionComponent<EditorPageProps>
 
-const EditorPage: EditorPageComponent = ({ author, contents }) => (
-    <EditorLayout {...author}>
-        <h1
-            className={tw`text-gray-400 dark:text-gray-400 text-2xl ml-2 font-medium my-0`}
-        >
-            Written by {author.name}
-        </h1>
-        {contents.map((content) => (
-            <Post {...content} />
-        ))}
-    </EditorLayout>
+const EditorPage: EditorPageComponent = ({ author, contents, blurhashMap }) => (
+    <BlurhashProvider value={blurhashMap}>
+        <EditorLayout {...author}>
+            <h1
+                className={tw`text-gray-400 dark:text-gray-400 text-2xl ml-2 font-medium my-0`}
+            >
+                Written by {author.name}
+            </h1>
+            {contents.map((content) => (
+                <Post {...content} />
+            ))}
+        </EditorLayout>
+    </BlurhashProvider>
 )
 
 export const getStaticPaths: GetStaticPaths = async () => ({
@@ -53,7 +60,10 @@ export const getStaticProps: GetStaticProps<EditorPageProps> = async (
     return {
         props: {
             author,
-            contents
+            contents,
+            blurhashMap: await generateBlurhashMap({
+                recommended: contents.map(reduceMetadata)
+            })
         }
     }
 }

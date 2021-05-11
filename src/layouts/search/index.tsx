@@ -9,12 +9,17 @@ import { Search as SearchIcon } from 'react-feather'
 import { OpenGraph } from '@components/atoms'
 
 import { isServer } from '@services/validation'
+import { BlurhashProvider } from '@services/blurhash'
 
 import styles from './search-layout.module.sass'
 
 import { SearchLayoutComponent } from './types'
 
-const SearchLayout: SearchLayoutComponent = ({ children, onSearch }) => {
+const SearchLayout: SearchLayoutComponent = ({
+    children,
+    onSearch,
+    blurhashMap
+}) => {
     let searchBar = useRef<HTMLInputElement>(null)
 
     let getDefaultValue = useMemo(
@@ -111,7 +116,15 @@ const SearchLayout: SearchLayoutComponent = ({ children, onSearch }) => {
                         </div>
                     </form>
                 </header>
-                <main className={`${styles['search-result']} ${tw('flex flex-col px-6 w-full')}`}>{children}</main>
+                <main
+                    className={`${styles['search-result']} ${tw(
+                        'flex flex-col px-6 w-full'
+                    )}`}
+                >
+                    <BlurhashProvider value={blurhashMap}>
+                        {children}
+                    </BlurhashProvider>
+                </main>
             </section>
         </>
     )
